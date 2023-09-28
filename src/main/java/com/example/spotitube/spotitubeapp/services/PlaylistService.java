@@ -18,14 +18,19 @@ public class PlaylistService {
     @Inject
     private PlaylistDAO playlistDAO;
 
-    public PlaylistResponseDTO getAllPlaylists(String token) {
-        connectionManager.startConn();
-        ArrayList<PlaylistDTO> playlists = playlistDAO.returnPlaylists(token);
-        connectionManager.closeConn();
-        return new PlaylistResponseDTO(playlists, calculateLength(playlists));
+    public PlaylistResponseDTO getAllPlaylists() {
+        try {
+            connectionManager.startConn();
+            ArrayList<PlaylistDTO> playlists = playlistDAO.returnPlaylists();
+            connectionManager.closeConn();
+            return new PlaylistResponseDTO(playlists, calculateLength(playlists));
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
     }
 
     private int calculateLength(ArrayList<PlaylistDTO> playlists) {
-        return 0;
+        return playlists.size();
     }
 }

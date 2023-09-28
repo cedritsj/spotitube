@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 public class LoginDAO {
     @Inject
     private ConnectionManager connectionManager;
-    private Logger logger = Logger.getLogger(getClass().getName());
 
     public boolean existingUser(Connection conn, LoginRequestDTO loginRequestDTO) throws SQLException {
         connectionManager.startConn();
