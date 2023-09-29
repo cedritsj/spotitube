@@ -1,4 +1,4 @@
-# Spotitube application for school project
+# Spotitube Application
 # API Endpoints: 
 	-POST /login
 	-GET /playlists
