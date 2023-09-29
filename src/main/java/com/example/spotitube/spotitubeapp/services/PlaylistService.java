@@ -1,6 +1,5 @@
 package com.example.spotitube.spotitubeapp.services;
 
-import com.example.spotitube.spotitubeapp.datasource.dao.LoginDAO;
 import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
@@ -21,16 +20,16 @@ public class PlaylistService {
     public PlaylistResponseDTO getAllPlaylists(String token) {
         try {
             connectionManager.startConn();
-            ArrayList<PlaylistDTO> playlists = playlistDAO.returnPlaylists(token);
+            ArrayList playlists = playlistDAO.returnPlaylists(token);
             connectionManager.closeConn();
-            return new PlaylistResponseDTO(playlists, calculateLength(playlists));
+            return new PlaylistResponseDTO(playlists, getLength(playlists));
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             return null;
         }
     }
 
-    private int calculateLength(ArrayList<PlaylistDTO> playlists) {
-        return playlists.size();
+    private int getLength(ArrayList<PlaylistDTO> playlists) {
+        return 0;
     }
 }

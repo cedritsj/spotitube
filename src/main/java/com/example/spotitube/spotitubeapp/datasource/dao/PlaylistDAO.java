@@ -27,7 +27,7 @@ public class PlaylistDAO{
         while(results.next()) {
             PlaylistDTO playlist = new PlaylistDTO(
                     results.getInt("id"),
-                    results.getString("title"),
+                    results.getString("name"),
                     Objects.equals(token, results.getString("token")));
             playlists.add(playlist);
         }
@@ -35,7 +35,7 @@ public class PlaylistDAO{
     }
 
     public PreparedStatement getAllPlaylists(Connection conn, String token) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("SELECT * FROM spotitube.playlists WHERE owner = ?");
+        PreparedStatement statement = conn.prepareStatement("SELECT * FROM playlists p JOIN users u ON p.owner = u.token WHERE u.token = ?;");
         statement.setString(1, token);
         conn.close();
         return statement;
