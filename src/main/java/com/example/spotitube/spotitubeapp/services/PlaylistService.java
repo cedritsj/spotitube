@@ -18,10 +18,10 @@ public class PlaylistService {
     @Inject
     private PlaylistDAO playlistDAO;
 
-    public PlaylistResponseDTO getAllPlaylists() {
+    public PlaylistResponseDTO getAllPlaylists(String token) {
         try {
             connectionManager.startConn();
-            ArrayList<PlaylistDTO> playlists = playlistDAO.returnPlaylists();
+            ArrayList<PlaylistDTO> playlists = playlistDAO.returnPlaylists(token);
             connectionManager.closeConn();
             return new PlaylistResponseDTO(playlists, calculateLength(playlists));
         } catch (SQLException e) {

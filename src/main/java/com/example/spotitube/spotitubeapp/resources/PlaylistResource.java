@@ -24,7 +24,7 @@ public class PlaylistResource {
         loginService.verifyToken(token);
         return Response
                 .status(200)
-                .entity(playlistService.getAllPlaylists())
+                .entity(playlistService.getAllPlaylists(token))
                 .build();
     }
 }

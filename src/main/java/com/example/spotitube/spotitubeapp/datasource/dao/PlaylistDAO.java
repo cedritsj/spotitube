@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PlaylistDAO{
 
@@ -20,18 +21,22 @@ public class PlaylistDAO{
     @Inject
     private PlaylistDTO playlistDTO;
 
-    public ArrayList returnPlaylists() throws SQLException {
-        PreparedStatement statement = getAllPlaylists(connectionManager.startConn(), playlistDTO);
+    public ArrayList returnPlaylists(String token) throws SQLException {
+        PreparedStatement statement = getAllPlaylists(connectionManager.startConn(), token);
         ResultSet results = statement.executeQuery();
         while(results.next()) {
-            //playlists.add();
+            PlaylistDTO playlist = new PlaylistDTO(
+                    results.getInt("id"),
+                    results.getString("title"),
+                    Objects.equals(token, results.getString("token")));
+            playlists.add(playlist);
         }
         return playlists;
     }
 
-    public PreparedStatement getAllPlaylists(Connection conn, PlaylistDTO playlistDTO) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("SELECT * FROM spotitube.playlists WHERE id = ?");
-        statement.setInt(1, playlistDTO.getId());
+    public PreparedStatement getAllPlaylists(Connection conn, String token) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("SELECT * FROM spotitube.playlists WHERE owner = ?");
+        statement.setString(1, token);
         conn.close();
         return statement;
     }
