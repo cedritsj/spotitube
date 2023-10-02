@@ -6,6 +6,7 @@ import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.PlaylistResponseDTO;
 import jakarta.inject.Inject;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -19,17 +20,13 @@ public class PlaylistService {
 
     public PlaylistResponseDTO getAllPlaylists(String token) {
         try {
-            connectionManager.startConn();
+            Connection conn = connectionManager.startConn();
             ArrayList playlists = playlistDAO.returnPlaylists(token);
             connectionManager.closeConn();
-            return new PlaylistResponseDTO(playlists, getLength(playlists));
+            return new PlaylistResponseDTO(playlists, playlistDAO.returnPlaylistLength(playlists, conn));
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             return null;
         }
-    }
-
-    private int getLength(ArrayList<PlaylistDTO> playlists) {
-        return 0;
     }
 }
