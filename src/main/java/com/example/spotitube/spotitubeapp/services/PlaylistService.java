@@ -13,17 +13,12 @@ import java.util.ArrayList;
 public class PlaylistService {
 
     @Inject
-    private ConnectionManager connectionManager;
-
-    @Inject
     private PlaylistDAO playlistDAO;
 
     public PlaylistResponseDTO getAllPlaylists(String token) {
         try {
-            Connection conn = connectionManager.startConn();
             ArrayList playlists = playlistDAO.returnPlaylists(token);
-            connectionManager.closeConn();
-            return new PlaylistResponseDTO(playlists, playlistDAO.returnPlaylistLength(playlists, conn));
+            return new PlaylistResponseDTO(playlists, playlistDAO.returnPlaylistLength(playlists));
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             return null;
