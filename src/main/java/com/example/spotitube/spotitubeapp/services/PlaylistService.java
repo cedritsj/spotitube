@@ -17,10 +17,10 @@ public class PlaylistService {
 
     public PlaylistResponseDTO getAllPlaylists(String token) {
         try {
-            ArrayList playlists = playlistDAO.returnPlaylists(token);
-            return new PlaylistResponseDTO(playlists, playlistDAO.returnPlaylistLength(playlists));
+            return playlistDAO.returnPlaylists(token);
+
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }

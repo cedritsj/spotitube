@@ -6,15 +6,15 @@ import java.util.ArrayList;
 
 public class PlaylistResponseDTO {
     private ArrayList<PlaylistDTO> playlists;
-    private int playlistLength;
+    private int length;
 
     public PlaylistResponseDTO() {
 
     }
 
-    public PlaylistResponseDTO(ArrayList<PlaylistDTO> playlists, int playlistLength) {
+    public PlaylistResponseDTO(ArrayList<PlaylistDTO> playlists, int length) {
         this.playlists = playlists;
-        this.playlistLength = playlistLength;
+        this.length = length;
     }
 
     public ArrayList<PlaylistDTO> getPlaylists() {
@@ -25,11 +25,11 @@ public class PlaylistResponseDTO {
         this.playlists = playlists;
     }
 
-    public int getPlaylistLength() {
-        return playlistLength;
+    public int getLength() {
+        return length;
     }
 
-    public void setPlaylistLength(int playlistLength) {
-        this.playlistLength = playlistLength;
+    public void setLength(int length) {
+        this.length = length;
     }
 }
