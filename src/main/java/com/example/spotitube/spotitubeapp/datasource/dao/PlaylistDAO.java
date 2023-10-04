@@ -19,9 +19,6 @@ public class PlaylistDAO {
     @Inject
     private ConnectionManager connectionManager;
 
-    @Inject
-    private PlaylistDTO playlistDTO;
-
     public PlaylistResponseDTO returnPlaylists(String token) throws SQLException {
         ;
         PreparedStatement statement = getAllPlaylists(connectionManager.startConn(), token);
@@ -49,7 +46,6 @@ public class PlaylistDAO {
         statement.setInt(1, id);
         return statement;
     }
-
 
     private int getOwnerIdWithToken(Connection conn, String token) throws SQLException {
         int id = 0;
