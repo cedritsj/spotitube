@@ -58,4 +58,8 @@ public class LoginDAO {
     public boolean hasSingleResult(ResultSet rs) throws SQLException {
         return rs.next() && !rs.next();
     }
+
+    public int getUserID(Connection conn, String token) {
+        return 1;
+    }
 }

@@ -48,4 +48,13 @@ public class LoginService {
     public void setLoginDAO(LoginDAO loginDAO) {
         this.loginDAO = loginDAO;
     }
+
+    public int getUserID(String token) {
+        try (Connection conn = connectionManager.startConn()) {
+            return loginDAO.getUserID(conn, token);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return 0;
+        }
+    }
 }

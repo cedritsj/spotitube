@@ -26,7 +26,7 @@ public class PlaylistResource {
         loginService.verifyToken(token);
         return Response
                 .status(200)
-                .entity(playlistService.getAllPlaylists(token))
+                .entity(playlistService.getAllPlaylists())
                 .build();
     }
 
@@ -36,10 +36,10 @@ public class PlaylistResource {
     public Response addPlaylist(PlaylistDTO playlist, @QueryParam("token") String token) {
         loginService.verifyToken(token);
         try {
-            playlistDAO.addPlaylist(token, playlist);
+            playlistService.addPlaylist(playlist, loginService.getUserID(token));
             return Response
                     .status(201)
-                    .entity(playlistService.getAllPlaylists(token))
+                    .entity(playlistService.getAllPlaylists())
                     .build();
         } catch (Exception e) {
             return Response.status(400).build();

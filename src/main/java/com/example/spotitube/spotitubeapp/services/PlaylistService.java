@@ -15,12 +15,22 @@ public class PlaylistService {
     @Inject
     private PlaylistDAO playlistDAO;
 
-    public PlaylistResponseDTO getAllPlaylists(String token) {
+    public PlaylistResponseDTO getAllPlaylists() {
         try {
-            return playlistDAO.returnPlaylists(token);
+            ArrayList<PlaylistDTO> playlists = playlistDAO.getAll();
+            return new PlaylistResponseDTO(playlists, 0);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void addPlaylist(PlaylistDTO playlist, int userID) {
+        try {
+            playlist.setOwnerID(userID);
+            playlistDAO.insert(playlist);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }
