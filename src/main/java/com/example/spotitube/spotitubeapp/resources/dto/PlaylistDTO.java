@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class PlaylistDTO {
     private int id;
     private String name;
-    private boolean owner;
+    private boolean owner = true;
+    private int ownerID;
     private ArrayList<TrackDTO> tracks;
 
     public PlaylistDTO() {
@@ -47,5 +48,13 @@ public class PlaylistDTO {
 
     public void setTracks(ArrayList<TrackDTO> tracks) {
         this.tracks = tracks;
+    }
+
+    public int getOwnerID() {
+        return ownerID;
+    }
+
+    public void setOwnerID(int ownerID) {
+        this.ownerID = ownerID;
     }
 }

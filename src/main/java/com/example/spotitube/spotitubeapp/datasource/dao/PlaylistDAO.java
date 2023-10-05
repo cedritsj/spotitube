@@ -20,29 +20,19 @@ public class PlaylistDAO {
     private ConnectionManager connectionManager;
 
     public PlaylistResponseDTO returnPlaylists(String token) throws SQLException {
-        PreparedStatement statement = getAllPlaylists(connectionManager.startConn(), token);
+        PreparedStatement statement = getAllPlaylists(connectionManager.startConn());
         ResultSet results = statement.executeQuery();
         int totalLength = 0;
         while (results.next()) {
+            boolean isOwner = Objects.equals(token, results.getString("token"));
             PlaylistDTO playlist = new PlaylistDTO(
                     results.getInt("id"),
                     results.getString("name"),
-                    Objects.equals(token, results.getString("token")));
+                    isOwner);
             playlists.add(playlist);
             totalLength += results.getInt("playlist_duration");
         }
         return new PlaylistResponseDTO(playlists, totalLength);
-    }
-
-    private int getOwnerIdWithToken(Connection conn, String token) throws SQLException {
-        int id = 0;
-        PreparedStatement statement = conn.prepareStatement("SELECT id FROM spotitube.users WHERE token = ?;");
-        statement.setString(1, token);
-        ResultSet results = statement.executeQuery();
-        while (results.next()) {
-            id = results.getInt("id");
-        }
-        return id;
     }
 
     public void addPlaylist(String token, PlaylistDTO playlist) {
@@ -56,15 +46,13 @@ public class PlaylistDAO {
         }
     }
 
-    private PreparedStatement getAllPlaylists(Connection conn, String token) throws SQLException {
-        int id = getOwnerIdWithToken(conn, token);
+    private PreparedStatement getAllPlaylists(Connection conn) throws SQLException {
         PreparedStatement statement = conn.prepareStatement("SELECT p.*, u.token, SUM(t.duration) AS `playlist_duration`" +
                 "FROM playlists p" +
                 "         LEFT JOIN spotitube.tracks_in_playlist tip ON tip.playlist_id = p.id" +
                 "         LEFT JOIN spotitube.tracks t ON t.id = tip.track_id" +
                 "         JOIN users u ON p.owner = u.id" +
-                " WHERE u.id = ? GROUP BY p.id;");
-        statement.setInt(1, id);
+                "         GROUP BY p.id;");
         return statement;
     }
 
