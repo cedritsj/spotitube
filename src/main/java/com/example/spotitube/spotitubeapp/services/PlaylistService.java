@@ -18,7 +18,6 @@ public class PlaylistService {
     public PlaylistResponseDTO getAllPlaylists(String token) {
         try {
             return playlistDAO.returnPlaylists(token);
-
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

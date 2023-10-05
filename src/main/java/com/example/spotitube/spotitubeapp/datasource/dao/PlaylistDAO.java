@@ -20,7 +20,6 @@ public class PlaylistDAO {
     private ConnectionManager connectionManager;
 
     public PlaylistResponseDTO returnPlaylists(String token) throws SQLException {
-        ;
         PreparedStatement statement = getAllPlaylists(connectionManager.startConn(), token);
         ResultSet results = statement.executeQuery();
         int totalLength = 0;
@@ -35,6 +34,28 @@ public class PlaylistDAO {
         return new PlaylistResponseDTO(playlists, totalLength);
     }
 
+    private int getOwnerIdWithToken(Connection conn, String token) throws SQLException {
+        int id = 0;
+        PreparedStatement statement = conn.prepareStatement("SELECT id FROM spotitube.users WHERE token = ?;");
+        statement.setString(1, token);
+        ResultSet results = statement.executeQuery();
+        while (results.next()) {
+            id = results.getInt("id");
+        }
+        return id;
+    }
+
+    public void addPlaylist(String token, PlaylistDTO playlist) {
+        try {
+            Connection conn = connectionManager.startConn();
+            PreparedStatement statement = insertIntoPlaylists(conn, token, playlist);
+            statement.executeUpdate();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private PreparedStatement getAllPlaylists(Connection conn, String token) throws SQLException {
         int id = getOwnerIdWithToken(conn, token);
         PreparedStatement statement = conn.prepareStatement("SELECT p.*, u.token, SUM(t.duration) AS `playlist_duration`" +
@@ -47,14 +68,10 @@ public class PlaylistDAO {
         return statement;
     }
 
-    private int getOwnerIdWithToken(Connection conn, String token) throws SQLException {
-        int id = 0;
-        PreparedStatement statement = conn.prepareStatement("SELECT id FROM spotitube.users WHERE token = ?;");
-        statement.setString(1, token);
-        ResultSet results = statement.executeQuery();
-        while (results.next()) {
-            id = results.getInt("id");
-        }
-        return id;
+    private PreparedStatement insertIntoPlaylists(Connection conn, String token, PlaylistDTO playlist) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("INSERT INTO playlists (name, owner) VALUES (?, (SELECT id FROM users WHERE token = ?));");
+        statement.setString(1, playlist.getName());
+        statement.setString(2, token);
+        return statement;
     }
 }
