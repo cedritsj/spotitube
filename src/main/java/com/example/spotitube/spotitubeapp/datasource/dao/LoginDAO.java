@@ -59,7 +59,16 @@ public class LoginDAO {
         return rs.next() && !rs.next();
     }
 
-    public int getUserID(Connection conn, String token) {
-        return 1;
+    public int getUserID(String token) {
+        try (Connection conn = connectionManager.startConn();
+             PreparedStatement statement = conn.prepareStatement("SELECT id FROM spotitube.users WHERE token = ?")) {
+            statement.setString(1, token);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            return result.getInt("id");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

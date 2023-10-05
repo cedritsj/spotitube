@@ -34,7 +34,7 @@ public class LoginService {
             }
         } catch (InvalidCredentialsException e) {
             throw new InvalidCredentialsException();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
             return null;
         }
@@ -50,11 +50,6 @@ public class LoginService {
     }
 
     public int getUserID(String token) {
-        try (Connection conn = connectionManager.startConn()) {
-            return loginDAO.getUserID(conn, token);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            return 0;
-        }
+        return loginDAO.getUserID(token);
     }
 }

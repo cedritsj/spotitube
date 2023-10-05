@@ -7,7 +7,9 @@ public class PlaylistDTO {
     private String name;
     private boolean owner = false;
     private int ownerID;
-    private ArrayList<TrackDTO> tracks;
+    private ArrayList<TrackDTO> tracks = new ArrayList<>();
+
+    private int length = 0;
 
     public PlaylistDTO() {
     }
@@ -56,5 +58,12 @@ public class PlaylistDTO {
 
     public void setOwnerID(int ownerID) {
         this.ownerID = ownerID;
+    }
+
+    public int getLength() {
+        for(TrackDTO track : tracks) {
+            length += track.getDuration();
+        }
+        return length;
     }
 }
