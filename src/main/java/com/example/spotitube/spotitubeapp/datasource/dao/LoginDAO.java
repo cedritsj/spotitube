@@ -61,7 +61,7 @@ public class LoginDAO {
 
     public int getUserID(String token) {
         try (Connection conn = connectionManager.startConn();
-             PreparedStatement statement = conn.prepareStatement("SELECT id FROM spotitube.users WHERE token = ?")) {
+             PreparedStatement statement = conn.prepareStatement("SELECT id FROM users WHERE token = ?")) {
             statement.setString(1, token);
             ResultSet result = statement.executeQuery();
             result.next();

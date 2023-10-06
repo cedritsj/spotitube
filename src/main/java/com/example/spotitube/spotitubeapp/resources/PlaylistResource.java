@@ -12,13 +12,8 @@ import jakarta.ws.rs.core.Response;
 @Path("/playlists")
 public class PlaylistResource {
 
-    @Inject
     private PlaylistService playlistService;
-    @Inject
     private LoginService loginService;
-
-    @Inject
-    private PlaylistDAO playlistDAO;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,10 +46,10 @@ public class PlaylistResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editPlaylist(PlaylistDTO playlist, @QueryParam("token") String token) {
+    public Response editPlaylist(PlaylistDTO playlist, @PathParam("id") int id, @QueryParam("token") String token) {
         loginService.verifyToken(token);
         try {
-            playlistService.editPlaylist(playlist);
+            playlistService.editPlaylist(playlist, id);
             return Response
                     .status(200)
                     .entity(playlistService.getAllPlaylists(loginService.getUserID(token)))
@@ -68,10 +63,10 @@ public class PlaylistResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePlaylist(PlaylistDTO playlist, @PathParam("id") int id, @QueryParam("token") String token) {
+    public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
         loginService.verifyToken(token);
         try {
-            playlistService.deletePlaylist(playlist);
+            playlistService.deletePlaylist(id);
             return Response
                     .status(200)
                     .entity(playlistService.getAllPlaylists(loginService.getUserID(token)))
@@ -79,5 +74,15 @@ public class PlaylistResource {
         } catch (Exception e) {
             return Response.status(400).build();
         }
+    }
+
+    @Inject
+    public void setLoginService(LoginService loginService) {
+        this.loginService = loginService;
+    }
+
+    @Inject
+    public void setPlaylistService(PlaylistService playlistService) {
+        this.playlistService = playlistService;
     }
 }

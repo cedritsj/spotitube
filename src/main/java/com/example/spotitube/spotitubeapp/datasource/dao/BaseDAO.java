@@ -28,8 +28,8 @@ public abstract class BaseDAO<T> {
         statement.executeUpdate();
     }
 
-    public void update(T t) throws SQLException {
-        PreparedStatement statement = statementBuilder(getConnection(), "UPDATE", Optional.of(t), Optional.empty());
+    public void update(T t ,int id) throws SQLException {
+        PreparedStatement statement = statementBuilder(getConnection(), "UPDATE", Optional.of(t), Optional.of(id));
         statement.executeUpdate();
     }
 

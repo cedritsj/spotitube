@@ -53,7 +53,7 @@ public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
         } else if(action.equals("UPDATE")) {
             PreparedStatement statement = connection.prepareStatement("UPDATE playlists SET name = ? WHERE id = ?;");
             statement.setString(1, playlistDTO.get().getName());
-            statement.setInt(2, playlistDTO.get().getId());
+            statement.setInt(2, id.get());
             return statement;
         } else if(action.equals("DELETE")) {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM playlists WHERE id = ?;");
