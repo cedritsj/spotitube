@@ -18,9 +18,7 @@ import java.util.UUID;
 @Default
 @ApplicationScoped
 public class LoginService {
-    @Inject
     private LoginDAO loginDAO;
-    @Inject
     private ConnectionManager connectionManager;
 
     public LoginResponseDTO authenticateUser(LoginRequestDTO loginRequestDTO) {
@@ -44,12 +42,17 @@ public class LoginService {
         loginDAO.verifyToken(token);
     }
 
+    public int getUserID(String token) {
+        return loginDAO.getUserID(token);
+    }
+
     @Inject
     public void setLoginDAO(LoginDAO loginDAO) {
         this.loginDAO = loginDAO;
     }
 
-    public int getUserID(String token) {
-        return loginDAO.getUserID(token);
+    @Inject
+    public void setConnectionManager(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 }

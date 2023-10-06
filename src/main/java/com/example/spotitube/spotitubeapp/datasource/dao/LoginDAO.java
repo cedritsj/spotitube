@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class LoginDAO {
-    @Inject
     private ConnectionManager connectionManager;
 
     public boolean existingUser(Connection conn, LoginRequestDTO loginRequestDTO) throws SQLException {
@@ -70,5 +69,10 @@ public class LoginDAO {
             e.printStackTrace();
             return 0;
         }
+    }
+
+    @Inject
+    public void setConnectionManager(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 }
