@@ -1,4 +1,4 @@
-package com.example.spotifytubeapp.exceptions;
+package com.example.spotitube.spotitubeapp.exceptions;
 
 import com.example.spotitube.spotitubeapp.exceptions.SpotitubeException;
 

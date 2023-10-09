@@ -1,5 +1,6 @@
 package com.example.spotitube.spotitubeapp.datasource.dbconnection;
 
+import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import jakarta.inject.Inject;
 
 import java.sql.Connection;
@@ -25,7 +26,7 @@ public class ConnectionManager {
             Class.forName(properties.driverString());
             connection = DriverManager.getConnection(properties.connectionString());
         } catch (ClassNotFoundException | SQLException e) {
-            logger.log(Level.SEVERE, e.getMessage());
+            throw new DatabaseException(e.getMessage());
         }
         return connection;
     }

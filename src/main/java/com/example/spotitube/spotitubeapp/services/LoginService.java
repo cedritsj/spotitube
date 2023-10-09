@@ -1,15 +1,15 @@
 package com.example.spotitube.spotitubeapp.services;
 
-import com.example.spotifytubeapp.exceptions.InvalidCredentialsException;
 import com.example.spotitube.spotitubeapp.datasource.dao.LoginDAO;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
+import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
+import com.example.spotitube.spotitubeapp.exceptions.InvalidCredentialsException;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.LoginResponseDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.BadRequestException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,11 +30,8 @@ public class LoginService {
             } else {
                 throw new InvalidCredentialsException();
             }
-        } catch (InvalidCredentialsException e) {
-            throw new InvalidCredentialsException();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            return null;
+            throw new DatabaseException(e.getMessage());
         }
     }
 

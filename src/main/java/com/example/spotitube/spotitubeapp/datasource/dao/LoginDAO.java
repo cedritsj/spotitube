@@ -1,6 +1,7 @@
 package com.example.spotitube.spotitubeapp.datasource.dao;
 
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
+import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
 import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import jakarta.inject.Inject;
@@ -14,29 +15,42 @@ import java.util.logging.Logger;
 public class LoginDAO {
     private ConnectionManager connectionManager;
 
-    public boolean existingUser(Connection conn, LoginRequestDTO loginRequestDTO) throws SQLException {
-        connectionManager.startConn();
-        PreparedStatement statement = getUserWithStatement(conn, loginRequestDTO);
-        boolean userExists = hasSingleResult(statement.executeQuery());
-        connectionManager.closeConn();
-        return userExists;
+    public boolean existingUser(Connection conn, LoginRequestDTO loginRequestDTO) {
+        try {
+            connectionManager.startConn();
+            PreparedStatement statement = getUserWithStatement(conn, loginRequestDTO);
+            boolean userExists = hasSingleResult(statement.executeQuery());
+            connectionManager.closeConn();
+            return userExists;
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+
+
     }
 
-    public void updateUserToken(LoginRequestDTO loginRequestDTO, String token) throws SQLException {
+    public void updateUserToken(LoginRequestDTO loginRequestDTO, String token) {
         String sql = "UPDATE spotitube.users SET token = ? WHERE user = ?;";
         try (Connection conn = connectionManager.startConn();
              PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, token);
             preparedStatement.setString(2, loginRequestDTO.getUser());
             preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
         }
     }
 
-    public PreparedStatement getUserWithStatement(Connection connection, LoginRequestDTO loginRequestDTO) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM spotitube.users WHERE user = ? AND password = ?");
-        statement.setString(1, loginRequestDTO.getUser());
-        statement.setString(2, loginRequestDTO.getPassword());
-        return statement;
+    public PreparedStatement getUserWithStatement(Connection connection, LoginRequestDTO loginRequestDTO) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM spotitube.users WHERE user = ? AND password = ?");
+            statement.setString(1, loginRequestDTO.getUser());
+            statement.setString(2, loginRequestDTO.getPassword());
+            return statement;
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+
     }
 
     public void verifyToken(String token) throws AuthenticationException {

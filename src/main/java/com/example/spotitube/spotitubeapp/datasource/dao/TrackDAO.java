@@ -44,7 +44,7 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
         return null;
     }
 
-    public List<TrackDTO> getTracksFromPlaylist(Connection connection, int id) {
+    public ArrayList<TrackDTO> getTracksFromPlaylist(Connection connection, int id) {
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT t.* FROM tracks t JOIN tracks_in_playlist tip ON t.id = tip.track_id WHERE tip.playlist_id = ?;");
             statement.setInt(1, id);
@@ -54,7 +54,7 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
         }
     }
 
-    public List<TrackDTO> getTracksNotInPlaylist(Connection conn, int id) {
+    public ArrayList<TrackDTO> getTracksNotInPlaylist(Connection conn, int id) {
         try {
             PreparedStatement statement = conn.prepareStatement("SELECT * FROM tracks WHERE id NOT IN (SELECT track_id FROM tracks_in_playlist WHERE playlist_id = ?)");
             statement.setInt(1, id);

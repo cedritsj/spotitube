@@ -22,6 +22,7 @@ public class PlaylistService {
         int totalLength = 0;
         for (PlaylistDTO playlist : playlists) {
             playlist.setOwner(userID == playlist.getOwnerID());
+            playlist.setTracks(trackService.getTracksPerPlaylist(playlist.getId()).getTracks());
             totalLength += playlist.getLength();
         }
         return new PlaylistResponseDTO(playlists, totalLength);

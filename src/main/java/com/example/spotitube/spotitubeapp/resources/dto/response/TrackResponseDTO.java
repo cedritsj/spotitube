@@ -7,21 +7,21 @@ import java.util.List;
 
 public class TrackResponseDTO {
 
-    private List<TrackDTO> tracks = new ArrayList<>();
+    private ArrayList<TrackDTO> tracks = new ArrayList<>();
     private int length;
 
     public TrackResponseDTO() {
     }
 
-    public TrackResponseDTO(List<TrackDTO> tracks) {
+    public TrackResponseDTO(ArrayList<TrackDTO> tracks) {
         this.tracks = tracks;
     }
 
-    public void setTracks(List<TrackDTO> tracks) {
+    public void setTracks(ArrayList<TrackDTO> tracks) {
         this.tracks = tracks;
     }
 
-    public List<TrackDTO> getTracks() {
+    public ArrayList<TrackDTO> getTracks() {
         return tracks;
     }
 
