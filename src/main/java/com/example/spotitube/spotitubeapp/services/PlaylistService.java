@@ -4,6 +4,7 @@ import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
 import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
+import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.PlaylistResponseDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.TrackResponseDTO;
 import jakarta.inject.Inject;
@@ -41,6 +42,14 @@ public class PlaylistService {
 
     public TrackResponseDTO getTracksPerPlaylist(int id) {
         return trackService.getTracksPerPlaylist(id);
+    }
+
+    public TrackResponseDTO addTrackToPlaylist(int id, TrackDTO trackDTO) {
+        return new TrackResponseDTO();
+    }
+
+    public TrackResponseDTO removeTrackFromPlaylist(int playlistId, int trackId) {
+        return trackService.removeTrackFromPlaylist(playlistId, trackId);
     }
 
     @Inject

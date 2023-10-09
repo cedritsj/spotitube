@@ -2,6 +2,7 @@ package com.example.spotitube.spotitubeapp.resources;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
+import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import com.example.spotitube.spotitubeapp.services.LoginService;
 import com.example.spotitube.spotitubeapp.services.PlaylistService;
 import jakarta.inject.Inject;
@@ -85,6 +86,30 @@ public class PlaylistResource {
         return Response
                 .status(200)
                 .entity(playlistService.getTracksPerPlaylist(id))
+                .build();
+    }
+
+    @POST
+    @Path("/{id}/tracks")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTrackToPlaylist(@PathParam("id") int id, TrackDTO trackDTO, @QueryParam("token") String token) {
+        loginService.verifyToken(token);
+        return Response
+                .status(200)
+                .entity(playlistService.addTrackToPlaylist(id, trackDTO))
+                .build();
+    }
+
+    @DELETE
+    @Path("/{id}/tracks/{trackId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeTrackFromPlaylist(@PathParam("id") int id, @PathParam("trackId") int trackId, @QueryParam("token") String token) {
+        loginService.verifyToken(token);
+        return Response
+                .status(200)
+                .entity(playlistService.removeTrackFromPlaylist(id, trackId))
                 .build();
     }
 
