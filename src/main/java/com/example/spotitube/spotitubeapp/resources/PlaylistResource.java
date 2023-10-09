@@ -76,6 +76,18 @@ public class PlaylistResource {
         }
     }
 
+    @GET
+    @Path("/{id}/tracks")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response getTracksFromPlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
+        loginService.verifyToken(token);
+        return Response
+                .status(200)
+                .entity(playlistService.getTracksPerPlaylist(id))
+                .build();
+    }
+
     @Inject
     public void setLoginService(LoginService loginService) {
         this.loginService = loginService;

@@ -1,9 +1,11 @@
 package com.example.spotitube.spotitubeapp.services;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
+import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.PlaylistResponseDTO;
+import com.example.spotitube.spotitubeapp.resources.dto.response.TrackResponseDTO;
 import jakarta.inject.Inject;
 
 import java.sql.SQLException;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 
 public class PlaylistService {
 
-    @Inject
+    private TrackService trackService;
     private PlaylistDAO playlistDAO;
 
     public PlaylistResponseDTO getAllPlaylists(int userID) {
@@ -35,5 +37,19 @@ public class PlaylistService {
 
     public void deletePlaylist(int id) {
         playlistDAO.delete(id);
+    }
+
+    public TrackResponseDTO getTracksPerPlaylist(int id) {
+        return trackService.getTracksPerPlaylist(id);
+    }
+
+    @Inject
+    public void setPlaylistDAO(PlaylistDAO playlistDAO) {
+        this.playlistDAO = playlistDAO;
+    }
+
+    @Inject
+    public void setTrackService(TrackService trackService) {
+        this.trackService = trackService;
     }
 }
