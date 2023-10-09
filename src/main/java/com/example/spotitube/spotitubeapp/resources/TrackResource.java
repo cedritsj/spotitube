@@ -16,7 +16,7 @@ public class TrackResource {
     @GET
     @Path("/tracks")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTracksNotInPlaylist(@QueryParam("forPlaylist") int id, @QueryParam("token") String token) {
+    public Response getTracksNotInPlaylist(@QueryParam("token") String token, @QueryParam("forPlaylist") int id) {
         loginService.verifyToken(token);
         return Response
                 .status(200)
