@@ -1,18 +1,15 @@
 package com.example.spotitube.spotitubeapp.datasource.dao;
 
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
+import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
-import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import jakarta.inject.Inject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.logging.Logger;
 
 public class LoginDAO {
     private ConnectionManager connectionManager;
