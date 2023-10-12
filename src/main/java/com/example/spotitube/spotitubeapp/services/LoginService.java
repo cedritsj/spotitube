@@ -26,7 +26,7 @@ public class LoginService {
         }
     }
 
-    public void verifyToken(String token) throws AuthenticationException {
+    public void verifyToken(String token) {
         loginDAO.verifyToken(token);
     }
 

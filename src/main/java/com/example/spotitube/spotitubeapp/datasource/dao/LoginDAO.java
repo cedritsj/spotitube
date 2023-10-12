@@ -5,6 +5,7 @@ import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
 import jakarta.inject.Inject;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,14 +18,20 @@ public class LoginDAO {
     public boolean existingUser(LoginRequestDTO loginRequestDTO) {
         try {
             PreparedStatement statement = getUserWithStatement(getConnection(), loginRequestDTO);
-            boolean userExists = hasSingleResult(statement.executeQuery());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                if (DigestUtils.sha256Hex(loginRequestDTO.getPassword()).equals(rs.getString("password")) && hasSingleResult(rs)) {
+                    return true;
+                } else {
+                    throw new AuthenticationException();
+                }
+            }
             connectionManager.closeConn();
-            return userExists;
-        } catch (SQLException e) {
+        } catch (
+                SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
-
-
+        return true;
     }
 
     public void updateUserToken(LoginRequestDTO loginRequestDTO, String token) {
@@ -47,10 +54,9 @@ public class LoginDAO {
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
-
     }
 
-    public void verifyToken(String token) throws AuthenticationException {
+    public void verifyToken(String token) {
         try {
             PreparedStatement statement = getConnection().prepareStatement("SELECT token FROM users WHERE token = ?");
             statement.setString(1, token);
@@ -60,7 +66,7 @@ public class LoginDAO {
                 throw new AuthenticationException();
             }
         } catch (SQLException e) {
-            throw new AuthenticationException();
+            throw new DatabaseException(e.getMessage());
         }
     }
 
