@@ -19,19 +19,14 @@ import java.util.UUID;
 @ApplicationScoped
 public class LoginService {
     private LoginDAO loginDAO;
-    private ConnectionManager connectionManager;
 
     public LoginResponseDTO authenticateUser(LoginRequestDTO loginRequestDTO) {
-        try (Connection conn = connectionManager.startConn()) {
-            if (loginDAO.existingUser(conn, loginRequestDTO)) {
-                String token = UUID.randomUUID().toString();
-                loginDAO.updateUserToken(loginRequestDTO, token);
-                return new LoginResponseDTO(loginRequestDTO.getUser(), token);
-            } else {
-                throw new InvalidCredentialsException();
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
+        if (loginDAO.existingUser(loginRequestDTO)) {
+            String token = UUID.randomUUID().toString();
+            loginDAO.updateUserToken(loginRequestDTO, token);
+            return new LoginResponseDTO(loginRequestDTO.getUser(), token);
+        } else {
+            throw new InvalidCredentialsException();
         }
     }
 
@@ -46,10 +41,5 @@ public class LoginService {
     @Inject
     public void setLoginDAO(LoginDAO loginDAO) {
         this.loginDAO = loginDAO;
-    }
-
-    @Inject
-    public void setConnectionManager(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
     }
 }

@@ -10,15 +10,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class LoginDAO {
     private ConnectionManager connectionManager;
 
-    public boolean existingUser(Connection conn, LoginRequestDTO loginRequestDTO) {
+    public boolean existingUser(LoginRequestDTO loginRequestDTO) {
         try {
-            connectionManager.startConn();
-            PreparedStatement statement = getUserWithStatement(conn, loginRequestDTO);
+            PreparedStatement statement = getUserWithStatement(getConnection(), loginRequestDTO);
             boolean userExists = hasSingleResult(statement.executeQuery());
             connectionManager.closeConn();
             return userExists;
@@ -30,9 +31,8 @@ public class LoginDAO {
     }
 
     public void updateUserToken(LoginRequestDTO loginRequestDTO, String token) {
-        String sql = "UPDATE spotitube.users SET token = ? WHERE user = ?;";
-        try (Connection conn = connectionManager.startConn();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+        try {
+            PreparedStatement preparedStatement = getConnection().prepareStatement("UPDATE users SET token = ? WHERE user = ?;");
             preparedStatement.setString(1, token);
             preparedStatement.setString(2, loginRequestDTO.getUser());
             preparedStatement.executeUpdate();
@@ -43,7 +43,7 @@ public class LoginDAO {
 
     public PreparedStatement getUserWithStatement(Connection connection, LoginRequestDTO loginRequestDTO) {
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM spotitube.users WHERE user = ? AND password = ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE user = ? AND password = ?");
             statement.setString(1, loginRequestDTO.getUser());
             statement.setString(2, loginRequestDTO.getPassword());
             return statement;
@@ -54,9 +54,8 @@ public class LoginDAO {
     }
 
     public void verifyToken(String token) throws AuthenticationException {
-        String sql = "SELECT token FROM spotitube.users WHERE token = ?";
-        try (Connection conn = connectionManager.startConn();
-             PreparedStatement statement = conn.prepareStatement(sql)) {
+        try {
+            PreparedStatement statement = getConnection().prepareStatement("SELECT token FROM users WHERE token = ?");
             statement.setString(1, token);
             ResultSet result = statement.executeQuery();
 
@@ -73,16 +72,19 @@ public class LoginDAO {
     }
 
     public int getUserID(String token) {
-        try (Connection conn = connectionManager.startConn();
-             PreparedStatement statement = conn.prepareStatement("SELECT id FROM users WHERE token = ?")) {
+        try {
+            PreparedStatement statement = getConnection().prepareStatement("SELECT id FROM users WHERE token = ?");
             statement.setString(1, token);
             ResultSet result = statement.executeQuery();
             result.next();
             return result.getInt("id");
         } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
+            throw new DatabaseException(e.getMessage());
         }
+    }
+
+    private Connection getConnection() {
+        return connectionManager.startConn();
     }
 
     @Inject
