@@ -20,7 +20,7 @@ public class LoginDAO {
             PreparedStatement statement = getUserWithStatement(getConnection(), loginRequestDTO);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                if (DigestUtils.sha256Hex(loginRequestDTO.getPassword()).equals(rs.getString("password")) && hasSingleResult(rs)) {
+                if (hasSingleResult(rs) && DigestUtils.sha256Hex(loginRequestDTO.getPassword()).equals(rs.getString("password"))) {
                     return true;
                 } else {
                     throw new AuthenticationException();
