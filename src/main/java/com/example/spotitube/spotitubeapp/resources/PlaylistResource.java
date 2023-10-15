@@ -32,15 +32,12 @@ public class PlaylistResource {
     public Response addPlaylist(PlaylistDTO playlist, @QueryParam("token") String token) {
         loginService.verifyToken(token);
         int userID = loginService.getUserID(token);
-        try {
-            playlistService.addPlaylist(playlist, userID);
-            return Response
-                    .status(201)
-                    .entity(playlistService.getAllPlaylists(userID))
-                    .build();
-        } catch (Exception e) {
-            return Response.status(400).build();
-        }
+
+        playlistService.addPlaylist(playlist, userID);
+        return Response
+                .status(201)
+                .entity(playlistService.getAllPlaylists(userID))
+                .build();
     }
 
     @PUT
@@ -49,15 +46,12 @@ public class PlaylistResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response editPlaylist(PlaylistDTO playlist, @PathParam("id") int id, @QueryParam("token") String token) {
         loginService.verifyToken(token);
-        try {
-            playlistService.editPlaylist(playlist, id);
-            return Response
-                    .status(200)
-                    .entity(playlistService.getAllPlaylists(loginService.getUserID(token)))
-                    .build();
-        } catch (Exception e) {
-            return Response.status(400).build();
-        }
+        playlistService.editPlaylist(playlist, id);
+        return Response
+                .status(200)
+                .entity(playlistService.getAllPlaylists(loginService.getUserID(token)))
+                .build();
+
     }
 
     @DELETE
@@ -66,21 +60,17 @@ public class PlaylistResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
         loginService.verifyToken(token);
-        try {
-            playlistService.deletePlaylist(id);
-            return Response
-                    .status(200)
-                    .entity(playlistService.getAllPlaylists(loginService.getUserID(token)))
-                    .build();
-        } catch (Exception e) {
-            return Response.status(400).build();
-        }
+        playlistService.deletePlaylist(id);
+        return Response
+                .status(200)
+                .entity(playlistService.getAllPlaylists(loginService.getUserID(token)))
+                .build();
     }
 
     @GET
     @Path("/{id}/tracks")
-    @Consumes("application/json")
-    @Produces("application/json")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getTracksFromPlaylist(@PathParam("id") int id, @QueryParam("token") String token) {
         loginService.verifyToken(token);
         return Response

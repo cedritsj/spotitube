@@ -8,18 +8,16 @@ import java.util.logging.Logger;
 
 public class DataProperties {
 
-    private Logger logger = Logger.getLogger(getClass().getName());
     private Properties properties;
 
-    public DataProperties() throws Exception {
+    public DataProperties() throws IOException {
         properties = new Properties();
         try {
             properties.load(Objects.requireNonNull(getClass()
                     .getClassLoader()
                     .getResourceAsStream("database.properties")));
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Can't access property file database.properties", e);
-            throw new Exception();
+            throw new IOException("Can't access property file database.properties");
         }
     }
 

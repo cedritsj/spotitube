@@ -7,6 +7,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+@Path("/tracks")
 public class TrackResource {
 
     private LoginService loginService;
@@ -14,7 +15,6 @@ public class TrackResource {
     private TrackService trackService;
 
     @GET
-    @Path("/tracks")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTracksNotInPlaylist(@QueryParam("token") String token, @QueryParam("forPlaylist") int id) {
         loginService.verifyToken(token);

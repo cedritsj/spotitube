@@ -15,9 +15,6 @@ import java.util.Optional;
 
 public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
 
-    @Inject
-    private ConnectionManager connectionManager;
-
     @Override
     public ArrayList<PlaylistDTO> buildFromResultSet(ResultSet rs) throws SQLException {
         ArrayList<PlaylistDTO> playlists = new ArrayList<>();

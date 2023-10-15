@@ -33,8 +33,8 @@ public class PlaylistService {
         playlistDAO.insert(playlist);
     }
 
-    public void editPlaylist(PlaylistDTO playist, int id) {
-        playlistDAO.update(playist, id);
+    public void editPlaylist(PlaylistDTO playlist, int id) {
+        playlistDAO.update(playlist, id);
     }
 
     public void deletePlaylist(int id) {
@@ -46,7 +46,8 @@ public class PlaylistService {
     }
 
     public TrackResponseDTO addTrackToPlaylist(int id, TrackDTO trackDTO) {
-        return new TrackResponseDTO();
+        trackService.addTrackToPlaylist(id, trackDTO);
+        return trackService.getTracksPerPlaylist(id);
     }
 
     public TrackResponseDTO removeTrackFromPlaylist(int playlistId, int trackId) {

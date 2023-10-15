@@ -35,12 +35,6 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
 
     @Override
     public PreparedStatement statementBuilder(Connection connection, String action, Optional<TrackDTO> trackDTO, Optional<Integer> id) throws SQLException {
-        if(action.equals("INSERT")) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
-            statement.setInt(1, id.get());
-            statement.setInt(2, trackDTO.get().getId());
-            return statement;
-        }
         return null;
     }
 
@@ -59,6 +53,17 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
             PreparedStatement statement = conn.prepareStatement("SELECT * FROM tracks WHERE id NOT IN (SELECT track_id FROM tracks_in_playlist WHERE playlist_id = ?)");
             statement.setInt(1, id);
             return buildFromResultSet(statement.executeQuery());
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    public void insertTrackInPlaylist(Connection connection, int id, TrackDTO trackDTO) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
+            statement.setInt(1, id);
+            statement.setInt(2, trackDTO.getId());
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }

@@ -28,6 +28,10 @@ public class TrackService {
         return trackResponseDTO;
     }
 
+    public void addTrackToPlaylist(int id, TrackDTO trackDTO) {
+        trackDAO.insertTrackInPlaylist(getConnection(), id, trackDTO);
+    }
+
     public TrackResponseDTO removeTrackFromPlaylist(int id, int trackId) {
         trackDAO.deleteTracksFromPlaylist(getConnection(), id, trackId);
         return getTracksPerPlaylist(id);
