@@ -11,8 +11,10 @@ import com.example.spotitube.spotitubeapp.services.PlaylistService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,8 +90,14 @@ public class PlaylistResourceTest {
     @Test
     void testDeletePlaylistSuccessfullyWithRightResponse() {
         doNothing().when(loginService).verifyToken(token);
-        assertEquals(Response.Status.OK.getStatusCode(), sut.deletePlaylist(playlistDTO.getId(), token).getStatus());
-        assertEquals(playlistResponseDTO, sut.deletePlaylist(playlistDTO.getId(), token).getEntity());
+        doNothing().when(playlistService).deletePlaylist(1);
+        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+        when(loginService.getUserID(token)).thenReturn(userId);
+
+        Response result = sut.deletePlaylist(playlistDTO.getId(), token);
+
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertEquals(playlistResponseDTO, result.getEntity());
     }
 
     @Test
