@@ -32,7 +32,6 @@ public class PlaylistResource {
     public Response addPlaylist(PlaylistDTO playlist, @QueryParam("token") String token) {
         loginService.verifyToken(token);
         int userID = loginService.getUserID(token);
-
         playlistService.addPlaylist(playlist, userID);
         return Response
                 .status(201)
@@ -86,7 +85,7 @@ public class PlaylistResource {
     public Response addTrackToPlaylist(@PathParam("id") int id, TrackDTO trackDTO, @QueryParam("token") String token) {
         loginService.verifyToken(token);
         return Response
-                .status(200)
+                .status(201)
                 .entity(playlistService.addTrackToPlaylist(id, trackDTO))
                 .build();
     }
