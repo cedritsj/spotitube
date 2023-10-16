@@ -49,20 +49,40 @@ public class PlaylistResourceTest {
 
         trackDTO.setId(1);
         trackResponseDTO.getTracks().add(trackDTO);
+
+        playlistDTO.setId(1);
+
+        ArrayList<PlaylistDTO> playlists = new ArrayList<>();
+        playlists.add(playlistDTO);
+
+        playlistResponseDTO.setPlaylists(playlists);
     }
 
     @Test
     void testRetrieveAllPlaylistsSuccessfullyWithRightResponse() {
         doNothing().when(loginService).verifyToken(token);
-        assertEquals(Response.Status.OK.getStatusCode(), sut.getPlaylists(token).getStatus());
-        assertEquals(playlistResponseDTO, sut.getPlaylists(token).getEntity());
+
+        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+        when(loginService.getUserID(token)).thenReturn(userId);
+
+        Response result = sut.getPlaylists(token);
+
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertEquals(playlistResponseDTO, result.getEntity());
     }
 
     @Test
     void testAddPlaylistSuccessfullyWithRightResponse() {
         doNothing().when(loginService).verifyToken(token);
-        assertEquals(Response.Status.CREATED.getStatusCode(), sut.addPlaylist(playlistDTO, token).getStatus());
-        assertEquals(playlistResponseDTO, sut.addPlaylist(playlistDTO, token).getEntity());
+        doNothing().when(playlistService).addPlaylist(playlistDTO, userId);
+
+        when(loginService.getUserID(token)).thenReturn(userId);
+        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+
+        Response result = sut.addPlaylist(playlistDTO, token);
+
+        assertEquals(Response.Status.CREATED.getStatusCode(), result.getStatus());
+        assertEquals(playlistResponseDTO, result.getEntity());
     }
 
     @Test
@@ -75,11 +95,14 @@ public class PlaylistResourceTest {
     @Test
     void testEditPlaylistSuccessfullyWithRightResponse() {
         doNothing().when(loginService).verifyToken(token);
+        doNothing().when(playlistService).editPlaylist(playlistDTO, 1);
+        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+        when(loginService.getUserID(token)).thenReturn(userId);
 
-//        when(playlistService.editPlaylist(playlistDTO, 1)).thenReturn(playlistResponseDTO);
+        Response result = sut.editPlaylist(playlistDTO, playlistDTO.getId(), token);
 
-        assertEquals(Response.Status.OK.getStatusCode(), sut.editPlaylist(playlistDTO, playlistDTO.getId(), token).getStatus());
-        assertEquals(playlistResponseDTO, sut.editPlaylist(playlistDTO, playlistDTO.getId(), token).getEntity());
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertEquals(playlistResponseDTO, result.getEntity());
     }
 
     @Test
@@ -88,8 +111,10 @@ public class PlaylistResourceTest {
 
         when(playlistService.getTracksPerPlaylist(playlistDTO.getId())).thenReturn(trackResponseDTO);
 
-        assertEquals(Response.Status.OK.getStatusCode(), sut.getTracksFromPlaylist(playlistDTO.getId(), token).getStatus());
-        assertEquals(trackResponseDTO, sut.getTracksFromPlaylist(playlistDTO.getId(), token).getEntity());
+        Response result = sut.getTracksFromPlaylist(playlistDTO.getId(), token);
+
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertEquals(trackResponseDTO, result.getEntity());
     }
 
     @Test
