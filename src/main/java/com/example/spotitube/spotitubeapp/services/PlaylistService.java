@@ -54,9 +54,9 @@ public class PlaylistService {
         return getTracksPerPlaylist(id);
     }
 
-    public TrackResponseDTO removeTrackFromPlaylist(int playlistId, int trackId) {
-        trackDAO.deleteTracksFromPlaylist(getConnection(), playlistId, trackId);
-        return getTracksPerPlaylist(playlistId);
+    public TrackResponseDTO removeTrackFromPlaylist(int id, int trackId) {
+        trackDAO.deleteTracksFromPlaylist(getConnection(), id, trackId);
+        return getTracksPerPlaylist(id);
     }
 
     private Connection getConnection() {

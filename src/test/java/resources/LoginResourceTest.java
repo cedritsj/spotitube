@@ -20,6 +20,7 @@ public class LoginResourceTest {
     private LoginResource sut;
     private LoginService loginService;
     private LoginRequestDTO loginRequestDTO;
+    private LoginResponseDTO loginResponseDTO;
 
     private final static String user = "user";
     private final static String password = "password";
@@ -34,28 +35,17 @@ public class LoginResourceTest {
         this.sut.setLoginService(loginService);
 
         this.loginRequestDTO = new LoginRequestDTO(user, password);
+
+        this.loginResponseDTO = new LoginResponseDTO(user, "1000-1000-1000");
     }
 
     @Test
     void testLoginSuccessfullyReturnResponse200() {
-        when(loginService.authenticateUser(loginRequestDTO)).thenReturn(new LoginResponseDTO(user, "1000"));
+        when(loginService.authenticateUser(loginRequestDTO)).thenReturn(loginResponseDTO);
 
-        var result = sut.login(loginRequestDTO);
+        Response result = sut.login(loginRequestDTO);
 
         assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertEquals(loginResponseDTO, result.getEntity());
     }
-
-//    @Test
-//    void testLoginInvalidCredentials() {
-//        when(loginService.authenticateUser(loginRequestDTO)).thenThrow(new InvalidCredentialsException());
-//
-//        assertThrows(InvalidCredentialsException.class, () -> sut.login(loginRequestDTO));
-//    }
-//
-//    @Test
-//    void testLoginBadRequest() {
-//        when(loginService.authenticateUser(loginRequestDTO)).thenThrow(new BadRequestException());
-//
-//        assertThrows(BadRequestException.class, () -> sut.login(loginRequestDTO));
-//    }
 }
