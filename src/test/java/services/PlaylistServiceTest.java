@@ -44,11 +44,12 @@ public class PlaylistServiceTest {
 
         this.playlistDAO = mock(PlaylistDAO.class);
         this.playlistDTO = mock(PlaylistDTO.class);
-        this.playlistResponseDTO = new PlaylistResponseDTO(playlists, 100);
+        this.playlistResponseDTO = new PlaylistResponseDTO(playlists, 0);
         this.trackResponseDTO = mock(TrackResponseDTO.class);
         this.trackDAO = mock(TrackDAO.class);
         this.trackDTO = mock(TrackDTO.class);
-        this.connectionManager = mock(ConnectionManager.class);;
+        this.connectionManager = mock(ConnectionManager.class);
+        ;
 
         this.sut.setPlaylistDAO(playlistDAO);
         this.sut.setTrackDAO(trackDAO);
@@ -116,5 +117,19 @@ public class PlaylistServiceTest {
 
         assertInstanceOf(TrackResponseDTO.class, result);
         assertEquals(tracks, result.getTracks());
+    }
+
+    @Test
+    void testAddTrackToPlaylistSuccessfully() {
+        sut.addTrackToPlaylist(playlistDTO.getId(), trackDTO);
+
+        verify(trackDAO, times(1)).insertTrackInPlaylist(connectionManager.startConn(), playlistDTO.getId(), trackDTO);
+    }
+
+    @Test
+    void testDeleteTrackFromPlaylistSuccessfully() {
+        sut.removeTrackFromPlaylist(playlistDTO.getId(), trackDTO.getId());
+
+        verify(trackDAO, times(1)).deleteTracksFromPlaylist(connectionManager.startConn(), playlistDTO.getId(), trackDTO.getId());
     }
 }

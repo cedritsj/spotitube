@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class PlaylistService {
 
-    private TrackService trackService;
     private PlaylistDAO playlistDAO;
     private TrackDAO trackDAO;
     private ConnectionManager connectionManager;
@@ -62,11 +61,6 @@ public class PlaylistService {
     @Inject
     public void setPlaylistDAO(PlaylistDAO playlistDAO) {
         this.playlistDAO = playlistDAO;
-    }
-
-    @Inject
-    public void setTrackService(TrackService trackService) {
-        this.trackService = trackService;
     }
 
     @Inject
