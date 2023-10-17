@@ -84,9 +84,10 @@ public class PlaylistResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addTrackToPlaylist(@PathParam("id") int id, TrackDTO trackDTO, @QueryParam("token") String token) {
         loginService.verifyToken(token);
+        playlistService.addTrackToPlaylist(id, trackDTO);
         return Response
                 .status(201)
-                .entity(playlistService.addTrackToPlaylist(id, trackDTO))
+                .entity(playlistService.getTracksPerPlaylist(id))
                 .build();
     }
 
@@ -96,9 +97,10 @@ public class PlaylistResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeTrackFromPlaylist(@PathParam("id") int id, @PathParam("trackId") int trackId, @QueryParam("token") String token) {
         loginService.verifyToken(token);
+        playlistService.removeTrackFromPlaylist(id, trackId);
         return Response
                 .status(200)
-                .entity(playlistService.removeTrackFromPlaylist(id, trackId))
+                .entity(playlistService.getTracksPerPlaylist(id))
                 .build();
     }
 

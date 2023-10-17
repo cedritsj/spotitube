@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class PlaylistResourceTest {
-
     private final int userId = 1;
     private final String token = "token";
     private PlaylistResource sut;
@@ -51,17 +50,14 @@ public class PlaylistResourceTest {
         this.sut.setLoginService(loginService);
 
         trackDTO.setId(1);
-
         ArrayList<TrackDTO> tracks = new ArrayList<>();
         tracks.add(trackDTO);
-
         trackResponseDTO.setTracks(tracks);
 
         playlistDTO.setId(1);
-
+        playlistDTO.setTracks(tracks);
         ArrayList<PlaylistDTO> playlists = new ArrayList<>();
         playlists.add(playlistDTO);
-
         playlistResponseDTO.setPlaylists(playlists);
     }
 
@@ -133,11 +129,11 @@ public class PlaylistResourceTest {
     @Test
     void testAddTrackToPlaylistSuccessfullyWithRightResponse() {
         doNothing().when(loginService).verifyToken(token);
+        doNothing().when(playlistService).addTrackToPlaylist(1, trackDTO);
 
-        when(playlistService.addTrackToPlaylist(playlistDTO.getId(), trackDTO)).thenReturn(trackResponseDTO);
         when(playlistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
 
-        Response result = sut.addTrackToPlaylist(playlistDTO.getId(), trackDTO, token);
+        Response result = sut.addTrackToPlaylist(1, trackDTO, token);
 
         assertEquals(Response.Status.CREATED.getStatusCode(), result.getStatus());
         assertEquals(trackResponseDTO, result.getEntity());
@@ -146,10 +142,11 @@ public class PlaylistResourceTest {
     @Test
     void testRemoveTrackFromPlaylistSuccesfullyWithRightResponse() {
         doNothing().when(loginService).verifyToken(token);
+        doNothing().when(playlistService).removeTrackFromPlaylist(1, 1);
 
-        when(playlistService.removeTrackFromPlaylist(playlistDTO.getId(), 1)).thenReturn(trackResponseDTO);
+        when(playlistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
 
-        Response result = sut.removeTrackFromPlaylist(playlistDTO.getId(), 1, token);
+        Response result = sut.removeTrackFromPlaylist(1, 1, token);
 
         assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
         assertEquals(trackResponseDTO, result.getEntity());

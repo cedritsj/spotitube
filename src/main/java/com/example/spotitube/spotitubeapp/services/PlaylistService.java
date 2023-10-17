@@ -23,13 +23,11 @@ public class PlaylistService {
 
     public PlaylistResponseDTO getAllPlaylists(int userID) {
         ArrayList<PlaylistDTO> playlists = playlistDAO.getAll();
-        int totalLength = 0;
         for (PlaylistDTO playlist : playlists) {
             playlist.setOwner(userID == playlist.getOwnerID());
             playlist.setTracks(getTracksPerPlaylist(playlist.getId()).getTracks());
-            totalLength += playlist.getLength();
         }
-        return new PlaylistResponseDTO(playlists, totalLength);
+        return new PlaylistResponseDTO(playlists, playlists.stream().mapToInt(PlaylistDTO::getLength).sum());
     }
 
     public void addPlaylist(PlaylistDTO playlist, int userID) {
@@ -49,14 +47,12 @@ public class PlaylistService {
         return new TrackResponseDTO(trackDAO.getTracksFromPlaylist(getConnection(), id));
     }
 
-    public TrackResponseDTO addTrackToPlaylist(int id, TrackDTO trackDTO) {
+    public void addTrackToPlaylist(int id, TrackDTO trackDTO) {
         trackDAO.insertTrackInPlaylist(getConnection(), id, trackDTO);
-        return getTracksPerPlaylist(id);
     }
 
-    public TrackResponseDTO removeTrackFromPlaylist(int id, int trackId) {
+    public void removeTrackFromPlaylist(int id, int trackId) {
         trackDAO.deleteTracksFromPlaylist(getConnection(), id, trackId);
-        return getTracksPerPlaylist(id);
     }
 
     private Connection getConnection() {
