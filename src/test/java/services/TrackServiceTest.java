@@ -37,7 +37,6 @@ public class TrackServiceTest {
 
         this.trackDAO = mock(TrackDAO.class);
         this.connectionManager = mock(ConnectionManager.class);
-        Connection conn = mock(Connection.class);
         this.trackResponseDTO = mock(TrackResponseDTO.class);
         this.trackDTO = new TrackDTO();
         this.playlistDTO = new PlaylistDTO();

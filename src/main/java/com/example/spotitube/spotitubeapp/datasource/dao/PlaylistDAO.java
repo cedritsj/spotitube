@@ -1,6 +1,7 @@
 package com.example.spotitube.spotitubeapp.datasource.dao;
 
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
+import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.PlaylistResponseDTO;
 import jakarta.inject.Inject;
@@ -29,33 +30,37 @@ public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
     }
 
     @Override
-    public PreparedStatement statementBuilder(Connection connection, String action, Optional<PlaylistDTO> playlistDTO, Optional<Integer> id) throws SQLException {
-        if(action.equals("SELECT") && id.isPresent()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM playlists WHERE id = ?;");
-            statement.setInt(1, id.get());
-            return statement;
-        } else if(action.equals("SELECT") && !id.isPresent()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT p.*, u.token, SUM(t.duration) AS `playlist_duration`" +
-                    "FROM playlists p" +
-                    "         LEFT JOIN spotitube.tracks_in_playlist tip ON tip.playlist_id = p.id" +
-                    "         LEFT JOIN spotitube.tracks t ON t.id = tip.track_id" +
-                    "         JOIN users u ON p.owner = u.id" +
-                    "         GROUP BY p.id;");
-            return statement;
-        } else if(action.equals("INSERT")) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO playlists (name, owner) VALUES (?, ?);");
-            statement.setString(1, playlistDTO.get().getName());
-            statement.setInt(2, playlistDTO.get().getOwnerID());
-            return statement;
-        } else if(action.equals("UPDATE")) {
-            PreparedStatement statement = connection.prepareStatement("UPDATE playlists SET name = ? WHERE id = ?;");
-            statement.setString(1, playlistDTO.get().getName());
-            statement.setInt(2, id.get());
-            return statement;
-        } else if(action.equals("DELETE")) {
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM playlists WHERE id = ?;");
-            statement.setInt(1, id.get());
-            return statement;
+    public PreparedStatement statementBuilder(Connection connection, String action, Optional<PlaylistDTO> playlistDTO, Optional<Integer> id) {
+        try {
+            if(action.equals("SELECT") && id.isPresent()) {
+                PreparedStatement statement = connection.prepareStatement("SELECT * FROM playlists WHERE id = ?;");
+                statement.setInt(1, id.get());
+                return statement;
+            } else if(action.equals("SELECT") && !id.isPresent()) {
+                PreparedStatement statement = connection.prepareStatement("SELECT p.*, u.token, SUM(t.duration) AS `playlist_duration`" +
+                        "FROM playlists p" +
+                        "         LEFT JOIN spotitube.tracks_in_playlist tip ON tip.playlist_id = p.id" +
+                        "         LEFT JOIN spotitube.tracks t ON t.id = tip.track_id" +
+                        "         JOIN users u ON p.owner = u.id" +
+                        "         GROUP BY p.id;");
+                return statement;
+            } else if(action.equals("INSERT")) {
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO playlists (name, owner) VALUES (?, ?);");
+                statement.setString(1, playlistDTO.get().getName());
+                statement.setInt(2, playlistDTO.get().getOwnerID());
+                return statement;
+            } else if(action.equals("UPDATE")) {
+                PreparedStatement statement = connection.prepareStatement("UPDATE playlists SET name = ? WHERE id = ?;");
+                statement.setString(1, playlistDTO.get().getName());
+                statement.setInt(2, id.get());
+                return statement;
+            } else if(action.equals("DELETE")) {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM playlists WHERE id = ?;");
+                statement.setInt(1, id.get());
+                return statement;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
         }
         return null;
     }

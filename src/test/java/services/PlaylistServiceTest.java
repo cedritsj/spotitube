@@ -22,20 +22,13 @@ public class PlaylistServiceTest {
     ArrayList<PlaylistDTO> playlists = new ArrayList<>();
     ArrayList<TrackDTO> tracks = new ArrayList<>();
     private final int userId = 1;
-
     private PlaylistService sut;
-
     private PlaylistDTO playlistDTO;
     private TrackDTO trackDTO;
-
     private PlaylistResponseDTO playlistResponseDTO;
-
     private TrackResponseDTO trackResponseDTO;
-
     private PlaylistDAO playlistDAO;
-
     private TrackDAO trackDAO;
-
     private ConnectionManager connectionManager;
 
     @BeforeEach
@@ -49,7 +42,7 @@ public class PlaylistServiceTest {
         this.trackDAO = mock(TrackDAO.class);
         this.trackDTO = mock(TrackDTO.class);
         this.connectionManager = mock(ConnectionManager.class);
-        ;
+
 
         this.sut.setPlaylistDAO(playlistDAO);
         this.sut.setTrackDAO(trackDAO);

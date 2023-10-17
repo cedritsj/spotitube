@@ -34,7 +34,7 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
     }
 
     @Override
-    public PreparedStatement statementBuilder(Connection connection, String action, Optional<TrackDTO> trackDTO, Optional<Integer> id) throws SQLException {
+    public PreparedStatement statementBuilder(Connection connection, String action, Optional<TrackDTO> trackDTO, Optional<Integer> id) {
         return null;
     }
 

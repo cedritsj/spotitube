@@ -64,7 +64,7 @@ public abstract class BaseDAO<T> {
 
     public abstract ArrayList<T> buildFromResultSet(ResultSet rs) throws SQLException;
 
-    public abstract PreparedStatement statementBuilder(Connection connection, String action, Optional<T> t, Optional<Integer> id) throws SQLException;
+    public abstract PreparedStatement statementBuilder(Connection connection, String action, Optional<T> t, Optional<Integer> id);
 
     private Connection getConnection() {
         return connectionManager.startConn();
