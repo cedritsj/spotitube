@@ -47,7 +47,7 @@ public class PlaylistService {
     }
 
     public void addTrackToPlaylist(int id, TrackDTO trackDTO) {
-        trackDAO.updateOfflineAvailable(getConnection(), trackDTO);
+        trackDAO.update(trackDTO, trackDTO.getId());
         trackDAO.insertTrackInPlaylist(getConnection(), id, trackDTO);
     }
 

@@ -35,6 +35,16 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
 
     @Override
     public PreparedStatement statementBuilder(Connection connection, String action, Optional<TrackDTO> trackDTO, Optional<Integer> id) {
+        try {
+            if(action.equals("UPDATE")) {
+                PreparedStatement statement = connection.prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
+                statement.setBoolean(1, trackDTO.get().getOfflineAvailable());
+                statement.setInt(2, id.get());
+                return statement;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
         return null;
     }
 
@@ -74,17 +84,6 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
             PreparedStatement statement = conn.prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
             statement.setInt(1, id);
             statement.setInt(2, trackId);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
-    }
-
-    public void updateOfflineAvailable(Connection conn, TrackDTO trackDTO) {
-        try {
-            PreparedStatement statement = conn.prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
-            statement.setBoolean(1, trackDTO.getOfflineAvailable());
-            statement.setInt(2, trackDTO.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
