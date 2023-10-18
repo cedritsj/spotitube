@@ -53,15 +53,15 @@ public class BaseDAOTest {
         when(connection.prepareStatement(anyString())).thenReturn(statement);
     }
 
-//    @Test
-//    void testGetAllSuccessFully() throws SQLException {
-//        when(sut.statementBuilder(connection, "SELECT", Optional.empty(), Optional.empty())).thenReturn(statement);
-//        when(sut.buildFromResultSet(statement.executeQuery())).thenReturn(playlists);
-//
-//        ArrayList result = sut.getAll();
-//
-//        assertEquals(playlists.get(0), result.get(0));
-//
-//
-//    }
+    @Test
+    void testGetAllSuccessFully() throws SQLException {
+        when(sut.statementBuilder(connection, "SELECT", Optional.empty(), Optional.empty())).thenReturn(statement);
+        when(sut.buildFromResultSet(statement.executeQuery())).thenReturn(playlists);
+
+        ArrayList result = sut.getAll();
+
+        assertEquals(playlists.get(0), result.get(0));
+
+
+    }
 }

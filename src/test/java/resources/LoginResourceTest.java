@@ -1,14 +1,11 @@
 package resources;
 
-import com.example.spotitube.spotitubeapp.exceptions.InvalidCredentialsException;
 import com.example.spotitube.spotitubeapp.resources.LoginResource;
+import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
-import com.example.spotitube.spotitubeapp.resources.dto.response.LoginResponseDTO;
 import com.example.spotitube.spotitubeapp.services.LoginService;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +17,7 @@ public class LoginResourceTest {
     private LoginResource sut;
     private LoginService loginService;
     private LoginRequestDTO loginRequestDTO;
-    private LoginResponseDTO loginResponseDTO;
+    private UserDTO userDTO;
 
     private final static String user = "user";
     private final static String password = "password";
@@ -36,16 +33,16 @@ public class LoginResourceTest {
 
         this.loginRequestDTO = new LoginRequestDTO(user, password);
 
-        this.loginResponseDTO = new LoginResponseDTO(user, "1000-1000-1000");
+        this.userDTO = new UserDTO(1, user, "1000-1000-1000");
     }
 
     @Test
     void testLoginSuccessfullyReturnResponse200() {
-        when(loginService.authenticateUser(loginRequestDTO)).thenReturn(loginResponseDTO);
+        when(loginService.login(loginRequestDTO)).thenReturn(userDTO);
 
         Response result = sut.login(loginRequestDTO);
 
         assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
-        assertEquals(loginResponseDTO, result.getEntity());
+        assertEquals(userDTO, result.getEntity());
     }
 }

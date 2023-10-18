@@ -55,7 +55,7 @@ public class LoginDAOTest {
 //
 //        when(sut.getUserWithStatement(conn, loginRequestDTO)).thenReturn(statement);
 //        when(statement.executeQuery()).thenReturn(rs);
-//        when(rs.next()).thenReturn(true, false);
+//        when(rs.next()).thenReturn(true);
 //        when(sut.hasSingleResult(rs)).thenReturn(true);
 //        when(rs.getString("user")).thenReturn("user");
 //        when(loginRequestDTO.getPassword()).thenReturn("password");

@@ -1,13 +1,17 @@
 package services;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.LoginDAO;
+import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import com.example.spotitube.spotitubeapp.exceptions.InvalidCredentialsException;
+import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
-import com.example.spotitube.spotitubeapp.resources.dto.response.LoginResponseDTO;
 import com.example.spotitube.spotitubeapp.services.LoginService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -19,7 +23,7 @@ public class LoginServiceTest {
 
     private LoginRequestDTO loginRequestDTO;
 
-    private LoginResponseDTO loginResponseDTO;
+    private UserDTO userDTO;
 
     private LoginDAO loginDAO;
 
@@ -33,36 +37,60 @@ public class LoginServiceTest {
 
         this.loginRequestDTO = new LoginRequestDTO("user", "password");
 
-        this.loginResponseDTO = new LoginResponseDTO("user", token);
+        this.userDTO = new UserDTO(1,"user", token);
     }
 
     @Test
     void testAuthenticateUserSuccessfullyWithRightResponse() {
-        when(loginDAO.existingUser(loginRequestDTO)).thenReturn(true);
+        when(loginDAO.getUserWithLoginRequest(loginRequestDTO)).thenReturn(userDTO);
 
-        doNothing().when(loginDAO).updateUserToken(loginRequestDTO, token);
+        doNothing().when(loginDAO).update(userDTO, userDTO.getId());
 
-        LoginResponseDTO result = sut.authenticateUser(loginRequestDTO);
+        UserDTO result = sut.login(loginRequestDTO);
 
-        assertInstanceOf(LoginResponseDTO.class, result);
+        assertInstanceOf(UserDTO.class, result);
     }
 
     @Test
-    void testAuthenticatieUserInvalidCredentialsWithRightResponse() {
-        doThrow(InvalidCredentialsException.class).when(loginDAO).existingUser(loginRequestDTO);
+    void testLoginWithThrowsInvalidCredentials() {
+        when(loginDAO.getUserWithLoginRequest(loginRequestDTO)).thenReturn(null);
 
-        doNothing().when(loginDAO).updateUserToken(loginRequestDTO, token);
+        Exception exception = assertThrows(InvalidCredentialsException.class, () -> sut.login(loginRequestDTO));
 
-        assertThrows(InvalidCredentialsException.class, () -> sut.authenticateUser(loginRequestDTO));
+        String expectedMessage = "Invalid credentials";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
     @Test
-    void testGetUserIdWithTokenSuccessfully() {
-        when(loginDAO.getUserID(token)).thenReturn(1);
+    void testGetUserWithTokenSuccessfully() {
+        when(loginDAO.getUserWithToken(token)).thenReturn(Optional.of(userDTO));
+        assertEquals(userDTO, sut.getUserWithToken(token));
+    }
+    
+    @Test
+    void testGetUserWithTokenThrowsAuthenticationException() {
+        when(loginDAO.getUserWithToken(token)).thenReturn(Optional.empty());
 
-        int result = sut.getUserID(token);
+        Exception exception = assertThrows(AuthenticationException.class, () -> sut.getUserWithToken(token));
 
-        assertEquals(1, result);
+        String expectedMessage = "Authentication failed";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void testVerifyToken() {
+        when(sut.getUserWithToken(token)).thenReturn(userDTO);
+        assertEquals(userDTO, sut.getUserWithToken(token));
+    }
+
+    @Test
+    void testGetUserId() {
+        when(sut.getUserWithToken(token)).thenReturn(userDTO);
+        assertEquals(userDTO.getId(), sut.getUserWithToken(token).getId());
     }
 }
 

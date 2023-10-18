@@ -3,105 +3,72 @@ package com.example.spotitube.spotitubeapp.datasource.dao;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
+import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
 import jakarta.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class LoginDAO {
-    private ConnectionManager connectionManager;
+public class LoginDAO extends BaseDAO<UserDTO> {
 
-    public boolean existingUser(LoginRequestDTO loginRequestDTO) {
+    public UserDTO getUserWithLoginRequest(LoginRequestDTO loginRequestDTO) {
         try {
-            PreparedStatement statement = getUserWithStatement(getConnection(), loginRequestDTO);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                if (hasSingleResult(rs) && DigestUtils.sha256Hex(loginRequestDTO.getPassword()).equals(rs.getString("password"))) {
-                    return true;
-                } else {
-                    throw new AuthenticationException();
-                }
-            }
+            PreparedStatement statement = getUserWithLoginRequestStatement(getConnection(), loginRequestDTO);
+            UserDTO result = buildFromResultSet(statement.executeQuery()).get(0);
             closeConnection();
-        } catch (
-                SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
-        return true;
+            return result;
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
-    public void updateUserToken(LoginRequestDTO loginRequestDTO, String token) {
+    public Optional<UserDTO> getUserWithToken(String token) {
         try {
-            PreparedStatement preparedStatement = getConnection().prepareStatement("UPDATE users SET token = ? WHERE user = ?;");
-            preparedStatement.setString(1, token);
-            preparedStatement.setString(2, loginRequestDTO.getUser());
-            preparedStatement.executeUpdate();
+            PreparedStatement statement = getUserWithTokenStatement(getConnection(), token);
+            Optional<UserDTO> result = Optional.of(buildFromResultSet(statement.executeQuery()).get(0));
             closeConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+            return result;
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
-    public PreparedStatement getUserWithStatement(Connection connection, LoginRequestDTO loginRequestDTO) {
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE user = ? AND password = ?");
-            statement.setString(1, loginRequestDTO.getUser());
-            statement.setString(2, loginRequestDTO.getPassword());
+    @Override
+    public PreparedStatement statementBuilder(Connection connection, String action, Optional<UserDTO> userDTO, Optional<Integer> id) throws SQLException {
+        if (action.equals("UPDATE") && userDTO.isPresent()) {
+            PreparedStatement statement = connection.prepareStatement("UPDATE users SET token = ? WHERE user = ?;");
+            statement.setString(1, userDTO.get().getToken());
+            statement.setString(2, userDTO.get().getUser());
             return statement;
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
+        } else {
+            return null;
         }
     }
 
-    public void verifyToken(String token) {
-        try {
-            PreparedStatement statement = getConnection().prepareStatement("SELECT token FROM users WHERE token = ?");
-            statement.setString(1, token);
-            ResultSet result = statement.executeQuery();
+    public PreparedStatement getUserWithLoginRequestStatement(Connection connection, LoginRequestDTO loginRequestDTO) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE user = ? AND password = ?");
+        statement.setString(1, loginRequestDTO.getUser());
+        statement.setString(2, DigestUtils.sha256Hex(loginRequestDTO.getPassword()));
+        return statement;
+    }
 
-            if (!result.isBeforeFirst()) {
-                throw new AuthenticationException();
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
+    public PreparedStatement getUserWithTokenStatement(Connection connection, String token) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE token = ?");
+        statement.setString(1, token);
+        return statement;
+    }
+
+    @Override
+    public ArrayList<UserDTO> buildFromResultSet(ResultSet rs) throws SQLException {
+        ArrayList<UserDTO> users = new ArrayList<>();
+        while (rs.next()) {
+            UserDTO user = new UserDTO(
+                    rs.getInt("id"),
+                    rs.getString("user"),
+                    rs.getString("token")
+            );
+            users.add(user);
         }
-        closeConnection();
-    }
-
-    public boolean hasSingleResult(ResultSet rs) throws SQLException {
-        return rs.next() && !rs.next();
-    }
-
-    public int getUserID(String token) {
-        try {
-            PreparedStatement statement = getConnection().prepareStatement("SELECT id FROM users WHERE token = ?");
-            statement.setString(1, token);
-            ResultSet result = statement.executeQuery();
-            result.next();
-            int id = result.getInt("id");
-            closeConnection();
-            return id;
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
-    }
-
-    private Connection getConnection() {
-        return connectionManager.startConn();
-    }
-
-    private void closeConnection() {
-        connectionManager.closeConn();
-    }
-
-    @Inject
-    public void setConnectionManager(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+        rs.close();
+        return users;
     }
 }

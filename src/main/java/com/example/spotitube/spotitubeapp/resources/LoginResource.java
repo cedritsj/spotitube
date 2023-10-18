@@ -21,7 +21,7 @@ public class LoginResource {
     public Response login(LoginRequestDTO loginRequestDTO) {
         return Response
                 .status(200)
-                .entity(loginService.authenticateUser(loginRequestDTO))
+                .entity(loginService.login(loginRequestDTO))
                 .build();
     }
 

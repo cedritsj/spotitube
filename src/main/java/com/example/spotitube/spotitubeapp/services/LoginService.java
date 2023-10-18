@@ -3,12 +3,13 @@ package com.example.spotitube.spotitubeapp.services;
 import com.example.spotitube.spotitubeapp.datasource.dao.LoginDAO;
 import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import com.example.spotitube.spotitubeapp.exceptions.InvalidCredentialsException;
+import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
-import com.example.spotitube.spotitubeapp.resources.dto.response.LoginResponseDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Default
@@ -16,22 +17,35 @@ import java.util.UUID;
 public class LoginService {
     private LoginDAO loginDAO;
 
-    public LoginResponseDTO authenticateUser(LoginRequestDTO loginRequestDTO) {
-        if (loginDAO.existingUser(loginRequestDTO)) {
-            String token = UUID.randomUUID().toString();
-            loginDAO.updateUserToken(loginRequestDTO, token);
-            return new LoginResponseDTO(loginRequestDTO.getUser(), token);
-        } else {
+    public UserDTO login(LoginRequestDTO loginRequestDTO) {
+        UserDTO userDTO = loginDAO.getUserWithLoginRequest(loginRequestDTO);
+        if (userDTO == null) {
             throw new InvalidCredentialsException();
         }
+
+        String token = UUID.randomUUID().toString();
+        userDTO.setToken(token);
+        loginDAO.update(userDTO, userDTO.getId());
+
+        return userDTO;
     }
 
-    public void verifyToken(String token) {
-        loginDAO.verifyToken(token);
+    public UserDTO verifyToken(String token) {
+        return getUserWithToken(token);
     }
 
     public int getUserID(String token) {
-        return loginDAO.getUserID(token);
+        return getUserWithToken(token).getId();
+    }
+
+    public UserDTO getUserWithToken(String token) {
+        Optional<UserDTO> userDTO = loginDAO.getUserWithToken(token);
+
+        if (userDTO.isEmpty()) {
+            throw new AuthenticationException();
+        }
+
+        return userDTO.get();
     }
 
     @Inject

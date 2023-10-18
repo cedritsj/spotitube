@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class TrackDAO extends BaseDAO<TrackDTO> {
-
     private ConnectionManager connectionManager;
 
     @Override
