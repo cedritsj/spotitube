@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class LoginDAO {
     private ConnectionManager connectionManager;
@@ -85,6 +87,25 @@ public class LoginDAO {
             throw new DatabaseException(e.getMessage());
         }
     }
+
+//    @Override
+//    public ArrayList<LoginRequestDTO> buildFromResultSet(ResultSet rs) {
+//        return null;
+//    }
+
+//    @Override
+//    public PreparedStatement statementBuilder(Connection connection, String action, Optional<LoginRequestDTO> loginRequestDTO, Optional<Integer> id) {
+//        try {
+//            if(action.equals("SELECT") && id.isPresent()) {
+//                PreparedStatement statement = connection.prepareStatement("SELECT token FROM users WHERE id = ?");
+//                statement.setInt(1, id.get());
+//                return statement;
+//            }
+//        } catch (SQLException e) {
+//            throw new DatabaseException(e.getMessage());
+//        }
+//        return null;
+//    }
 
     private Connection getConnection() {
         return connectionManager.startConn();

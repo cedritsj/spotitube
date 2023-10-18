@@ -79,4 +79,15 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
             throw new DatabaseException(e.getMessage());
         }
     }
+
+    public void updateOfflineAvailable(Connection conn, TrackDTO trackDTO) {
+        try {
+            PreparedStatement statement = conn.prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
+            statement.setBoolean(1, trackDTO.getOfflineAvailable());
+            statement.setInt(2, trackDTO.getId());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
 }
