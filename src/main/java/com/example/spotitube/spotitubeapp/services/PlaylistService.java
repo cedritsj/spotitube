@@ -18,7 +18,6 @@ public class PlaylistService {
 
     private PlaylistDAO playlistDAO;
     private TrackDAO trackDAO;
-    private ConnectionManager connectionManager;
 
     public PlaylistResponseDTO getAllPlaylists(int userID) {
         ArrayList<PlaylistDTO> playlists = playlistDAO.getAll();
@@ -43,20 +42,16 @@ public class PlaylistService {
     }
 
     public TrackResponseDTO getTracksPerPlaylist(int id) {
-        return new TrackResponseDTO(trackDAO.getTracksFromPlaylist(getConnection(), id));
+        return new TrackResponseDTO(trackDAO.getTracksFromPlaylist(id));
     }
 
     public void addTrackToPlaylist(int id, TrackDTO trackDTO) {
-        trackDAO.update(trackDTO, trackDTO.getId());
-        trackDAO.insertTrackInPlaylist(getConnection(), id, trackDTO);
+        trackDAO.updateOfflineAvailable(trackDTO);
+        trackDAO.insertTrackInPlaylist(id, trackDTO);
     }
 
     public void removeTrackFromPlaylist(int id, int trackId) {
-        trackDAO.deleteTracksFromPlaylist(getConnection(), id, trackId);
-    }
-
-    private Connection getConnection() {
-        return connectionManager.startConn();
+        trackDAO.deleteTracksFromPlaylist(id, trackId);
     }
 
     @Inject
@@ -67,10 +62,5 @@ public class PlaylistService {
     @Inject
     public void setTrackDAO(TrackDAO trackDAO) {
         this.trackDAO = trackDAO;
-    }
-
-    @Inject
-    public void setConnectionManager (ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
     }
 }

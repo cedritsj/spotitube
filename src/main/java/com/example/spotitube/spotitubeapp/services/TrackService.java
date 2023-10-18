@@ -20,7 +20,7 @@ public class TrackService {
 
     public TrackResponseDTO getTracksNotInPlaylist(int id) {
         TrackResponseDTO trackResponseDTO = new TrackResponseDTO();
-        trackResponseDTO.setTracks(trackDAO.getTracksNotInPlaylist(connectionManager.startConn(), id));
+        trackResponseDTO.setTracks(trackDAO.getTracksNotInPlaylist(id));
         return trackResponseDTO;
     }
 

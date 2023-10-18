@@ -29,7 +29,6 @@ public class PlaylistServiceTest {
     private TrackResponseDTO trackResponseDTO;
     private PlaylistDAO playlistDAO;
     private TrackDAO trackDAO;
-    private ConnectionManager connectionManager;
 
     @BeforeEach
     public void Setup() {
@@ -41,12 +40,10 @@ public class PlaylistServiceTest {
         this.trackResponseDTO = mock(TrackResponseDTO.class);
         this.trackDAO = mock(TrackDAO.class);
         this.trackDTO = mock(TrackDTO.class);
-        this.connectionManager = mock(ConnectionManager.class);
 
 
         this.sut.setPlaylistDAO(playlistDAO);
         this.sut.setTrackDAO(trackDAO);
-        this.sut.setConnectionManager(connectionManager);
 
         trackDTO.setId(1);
         trackDTO.setTitle("track");
@@ -104,7 +101,7 @@ public class PlaylistServiceTest {
 
     @Test
     void testGetAllTracksPerPlaylistSuccessfullyWithRightResponse() {
-        when(trackDAO.getTracksFromPlaylist(connectionManager.startConn(), playlistDTO.getId())).thenReturn(tracks);
+        when(trackDAO.getTracksFromPlaylist(playlistDTO.getId())).thenReturn(tracks);
 
         TrackResponseDTO result = sut.getTracksPerPlaylist(playlistDTO.getId());
 
@@ -116,14 +113,13 @@ public class PlaylistServiceTest {
     void testAddTrackToPlaylistSuccessfully() {
         sut.addTrackToPlaylist(playlistDTO.getId(), trackDTO);
 
-        verify(trackDAO, times(1)).update(trackDTO, trackDTO.getId());
-        verify(trackDAO, times(1)).insertTrackInPlaylist(connectionManager.startConn(), playlistDTO.getId(), trackDTO);
+        verify(trackDAO, times(1)).insertTrackInPlaylist(playlistDTO.getId(), trackDTO);
     }
 
     @Test
     void testDeleteTrackFromPlaylistSuccessfully() {
         sut.removeTrackFromPlaylist(playlistDTO.getId(), trackDTO.getId());
 
-        verify(trackDAO, times(1)).deleteTracksFromPlaylist(connectionManager.startConn(), playlistDTO.getId(), trackDTO.getId());
+        verify(trackDAO, times(1)).deleteTracksFromPlaylist(playlistDTO.getId(), trackDTO.getId());
     }
 }

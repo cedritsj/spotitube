@@ -28,7 +28,7 @@ public class LoginDAO {
                     throw new AuthenticationException();
                 }
             }
-            connectionManager.closeConn();
+            closeConnection();
         } catch (
                 SQLException e) {
             throw new DatabaseException(e.getMessage());
@@ -42,6 +42,7 @@ public class LoginDAO {
             preparedStatement.setString(1, token);
             preparedStatement.setString(2, loginRequestDTO.getUser());
             preparedStatement.executeUpdate();
+            closeConnection();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
@@ -70,6 +71,7 @@ public class LoginDAO {
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
+        closeConnection();
     }
 
     public boolean hasSingleResult(ResultSet rs) throws SQLException {
@@ -82,33 +84,20 @@ public class LoginDAO {
             statement.setString(1, token);
             ResultSet result = statement.executeQuery();
             result.next();
-            return result.getInt("id");
+            int id = result.getInt("id");
+            closeConnection();
+            return id;
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
     }
 
-//    @Override
-//    public ArrayList<LoginRequestDTO> buildFromResultSet(ResultSet rs) {
-//        return null;
-//    }
-
-//    @Override
-//    public PreparedStatement statementBuilder(Connection connection, String action, Optional<LoginRequestDTO> loginRequestDTO, Optional<Integer> id) {
-//        try {
-//            if(action.equals("SELECT") && id.isPresent()) {
-//                PreparedStatement statement = connection.prepareStatement("SELECT token FROM users WHERE id = ?");
-//                statement.setInt(1, id.get());
-//                return statement;
-//            }
-//        } catch (SQLException e) {
-//            throw new DatabaseException(e.getMessage());
-//        }
-//        return null;
-//    }
-
     private Connection getConnection() {
         return connectionManager.startConn();
+    }
+
+    private void closeConnection() {
+        connectionManager.closeConn();
     }
 
     @Inject

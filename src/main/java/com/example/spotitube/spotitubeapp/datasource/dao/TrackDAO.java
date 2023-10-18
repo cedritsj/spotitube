@@ -1,9 +1,11 @@
 package com.example.spotitube.spotitubeapp.datasource.dao;
 
+import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.TrackResource;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
+import jakarta.inject.Inject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TrackDAO extends BaseDAO<TrackDTO>{
+public class TrackDAO extends BaseDAO<TrackDTO> {
+
+    private ConnectionManager connectionManager;
+
     @Override
     public ArrayList<TrackDTO> buildFromResultSet(ResultSet rs) throws SQLException {
         ArrayList<TrackDTO> tracks = new ArrayList<>();
@@ -30,27 +35,18 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
                     rs.getBoolean("offlineAvailable"));
             tracks.add(track);
         }
+        closeConnection();
         return tracks;
     }
 
     @Override
     public PreparedStatement statementBuilder(Connection connection, String action, Optional<TrackDTO> trackDTO, Optional<Integer> id) {
-        try {
-            if(action.equals("UPDATE")) {
-                PreparedStatement statement = connection.prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
-                statement.setBoolean(1, trackDTO.get().getOfflineAvailable());
-                statement.setInt(2, id.get());
-                return statement;
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
         return null;
     }
 
-    public ArrayList<TrackDTO> getTracksFromPlaylist(Connection connection, int id) {
+    public ArrayList<TrackDTO> getTracksFromPlaylist(int id) {
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT t.* FROM tracks t JOIN tracks_in_playlist tip ON t.id = tip.track_id WHERE tip.playlist_id = ?;");
+            PreparedStatement statement = getConnection().prepareStatement("SELECT t.* FROM tracks t JOIN tracks_in_playlist tip ON t.id = tip.track_id WHERE tip.playlist_id = ?;");
             statement.setInt(1, id);
             return buildFromResultSet(statement.executeQuery());
         } catch (SQLException e) {
@@ -58,9 +54,9 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
         }
     }
 
-    public ArrayList<TrackDTO> getTracksNotInPlaylist(Connection conn, int id) {
+    public ArrayList<TrackDTO> getTracksNotInPlaylist(int id) {
         try {
-            PreparedStatement statement = conn.prepareStatement("SELECT * FROM tracks WHERE id NOT IN (SELECT track_id FROM tracks_in_playlist WHERE playlist_id = ?)");
+            PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM tracks WHERE id NOT IN (SELECT track_id FROM tracks_in_playlist WHERE playlist_id = ?)");
             statement.setInt(1, id);
             return buildFromResultSet(statement.executeQuery());
         } catch (SQLException e) {
@@ -68,25 +64,52 @@ public class TrackDAO extends BaseDAO<TrackDTO>{
         }
     }
 
-    public void insertTrackInPlaylist(Connection connection, int id, TrackDTO trackDTO) {
+    public void insertTrackInPlaylist(int id, TrackDTO trackDTO) {
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
+            PreparedStatement statement = getConnection().prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
             statement.setInt(1, id);
             statement.setInt(2, trackDTO.getId());
             statement.executeUpdate();
+            closeConnection();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
     }
 
-    public void deleteTracksFromPlaylist(Connection conn, int id, int trackId) {
+    public void deleteTracksFromPlaylist(int id, int trackId) {
         try {
-            PreparedStatement statement = conn.prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
+            PreparedStatement statement = getConnection().prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
             statement.setInt(1, id);
             statement.setInt(2, trackId);
             statement.executeUpdate();
+            closeConnection();
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
+    }
+
+    public void updateOfflineAvailable(TrackDTO trackDTO) {
+        try {
+            PreparedStatement statement = getConnection().prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
+            statement.setBoolean(1, trackDTO.getOfflineAvailable());
+            statement.setInt(2, trackDTO.getId());
+            statement.executeUpdate();
+            closeConnection();
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
+    }
+
+    public Connection getConnection() {
+        return connectionManager.startConn();
+    }
+
+    public void closeConnection() {
+        connectionManager.closeConn();
+    }
+
+    @Inject
+    public void setConnectionManager(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 }

@@ -26,6 +26,7 @@ public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
                     rs.getInt("owner"));
             playlists.add(playlist);
         }
+        rs.close();
         return playlists;
     }
 
@@ -37,7 +38,7 @@ public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
                 statement.setInt(1, id.get());
                 return statement;
             } else if(action.equals("SELECT") && !id.isPresent()) {
-                PreparedStatement statement = connection.prepareStatement("SELECT p.*, u.token, SUM(t.duration) AS `playlist_duration`" +
+                PreparedStatement statement = connection.prepareStatement("SELECT p.*, u.token " +
                         "FROM playlists p" +
                         "         LEFT JOIN spotitube.tracks_in_playlist tip ON tip.playlist_id = p.id" +
                         "         LEFT JOIN spotitube.tracks t ON t.id = tip.track_id" +

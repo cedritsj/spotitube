@@ -12,7 +12,6 @@ public abstract class BaseDAO<T> {
 
     private ConnectionManager connectionManager;
 
-
     public ArrayList<T> getAll() {
         try {
             PreparedStatement statement = statementBuilder(getConnection(), "SELECT", Optional.empty(), Optional.empty());
@@ -39,7 +38,6 @@ public abstract class BaseDAO<T> {
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
-
     }
 
     public void update(T t, int id) {
@@ -49,7 +47,6 @@ public abstract class BaseDAO<T> {
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
-
     }
 
     public void delete(int id) {
@@ -59,7 +56,6 @@ public abstract class BaseDAO<T> {
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage());
         }
-
     }
 
     public abstract ArrayList<T> buildFromResultSet(ResultSet rs) throws SQLException;
