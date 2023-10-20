@@ -113,6 +113,7 @@ public class PlaylistServiceTest {
     void testAddTrackToPlaylistSuccessfully() {
         sut.addTrackToPlaylist(playlistDTO.getId(), trackDTO);
 
+        verify(trackDAO, times(1)).update(trackDTO, trackDTO.getId());
         verify(trackDAO, times(1)).insertTrackInPlaylist(playlistDTO.getId(), trackDTO);
     }
 

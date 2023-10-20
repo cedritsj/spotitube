@@ -34,12 +34,22 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
                     rs.getBoolean("offlineAvailable"));
             tracks.add(track);
         }
-        closeConnection();
+        rs.close();
         return tracks;
     }
 
     @Override
     public PreparedStatement statementBuilder(Connection connection, String action, Optional<TrackDTO> trackDTO, Optional<Integer> id) {
+        try {
+            if (action.equals("UPDATE")) {
+                PreparedStatement statement = connection.prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
+                statement.setBoolean(1, trackDTO.get().getOfflineAvailable());
+                statement.setInt(2, id.get());
+                return statement;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e.getMessage());
+        }
         return null;
     }
 
@@ -63,10 +73,10 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
         }
     }
 
-    public void insertTrackInPlaylist(int id, TrackDTO trackDTO) {
+    public void insertTrackInPlaylist(int playlistId, TrackDTO trackDTO) {
         try {
             PreparedStatement statement = getConnection().prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
-            statement.setInt(1, id);
+            statement.setInt(1, playlistId);
             statement.setInt(2, trackDTO.getId());
             statement.executeUpdate();
             closeConnection();
@@ -80,18 +90,6 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
             PreparedStatement statement = getConnection().prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
             statement.setInt(1, id);
             statement.setInt(2, trackId);
-            statement.executeUpdate();
-            closeConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
-    }
-
-    public void updateOfflineAvailable(TrackDTO trackDTO) {
-        try {
-            PreparedStatement statement = getConnection().prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
-            statement.setBoolean(1, trackDTO.getOfflineAvailable());
-            statement.setInt(2, trackDTO.getId());
             statement.executeUpdate();
             closeConnection();
         } catch (SQLException e) {

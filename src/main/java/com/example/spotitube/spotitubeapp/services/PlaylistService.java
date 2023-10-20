@@ -45,9 +45,9 @@ public class PlaylistService {
         return new TrackResponseDTO(trackDAO.getTracksFromPlaylist(id));
     }
 
-    public void addTrackToPlaylist(int id, TrackDTO trackDTO) {
-        trackDAO.updateOfflineAvailable(trackDTO);
-        trackDAO.insertTrackInPlaylist(id, trackDTO);
+    public void addTrackToPlaylist(int playlistId, TrackDTO trackDTO) {
+        trackDAO.update(trackDTO, trackDTO.getId());
+        trackDAO.insertTrackInPlaylist(playlistId, trackDTO);
     }
 
     public void removeTrackFromPlaylist(int id, int trackId) {
