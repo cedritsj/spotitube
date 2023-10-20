@@ -18,9 +18,7 @@ public abstract class BaseDAO<T> {
             ArrayList<T> result = buildFromResultSet(statement.executeQuery());
             closeConnection();
             return result;
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
 
@@ -30,9 +28,7 @@ public abstract class BaseDAO<T> {
             T result = buildFromResultSet(statement.executeQuery()).get(0);
             closeConnection();
             return result;
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void insert(T t) {
@@ -40,9 +36,7 @@ public abstract class BaseDAO<T> {
             PreparedStatement statement = statementBuilder(getConnection(), "INSERT", Optional.of(t), Optional.empty());
             statement.executeUpdate();
             closeConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void update(T t, int id) {
@@ -50,9 +44,7 @@ public abstract class BaseDAO<T> {
             PreparedStatement statement = statementBuilder(getConnection(), "UPDATE", Optional.of(t), Optional.of(id));
             statement.executeUpdate();
             closeConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void delete(int id) {
@@ -60,9 +52,7 @@ public abstract class BaseDAO<T> {
             PreparedStatement statement = statementBuilder(getConnection(), "DELETE", Optional.empty(), Optional.of(id));
             statement.executeUpdate();
             closeConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public abstract ArrayList<T> buildFromResultSet(ResultSet rs) throws SQLException;

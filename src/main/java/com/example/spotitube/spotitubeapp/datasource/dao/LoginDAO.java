@@ -45,14 +45,14 @@ public class LoginDAO extends BaseDAO<UserDTO> {
     }
 
     public PreparedStatement getUserWithLoginRequestStatement(Connection connection, LoginRequestDTO loginRequestDTO) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE user = ? AND password = ?");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE user = ? AND password = ?;");
         statement.setString(1, loginRequestDTO.getUser());
         statement.setString(2, DigestUtils.sha256Hex(loginRequestDTO.getPassword()));
         return statement;
     }
 
     public PreparedStatement getUserWithTokenStatement(Connection connection, String token) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE token = ?");
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE token = ?;");
         statement.setString(1, token);
         return statement;
     }

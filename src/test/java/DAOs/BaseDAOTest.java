@@ -6,6 +6,8 @@ import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionMana
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,13 +18,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class BaseDAOTest {
-    private PlaylistDAO sut;
-
-    private PlaylistDTO playlistDTO;
+    private BaseDAO<PlaylistDTO> sut;
 
     private ConnectionManager connectionManager;
 
@@ -34,14 +33,15 @@ public class BaseDAOTest {
 
     private ArrayList<PlaylistDTO> playlists = new ArrayList<>();
 
+    private PlaylistDTO playlistDTO = new PlaylistDTO();
+
     @BeforeEach
     public void Setup() throws SQLException {
-        this.sut = mock(PlaylistDAO.class);
+        sut = mock(BaseDAO.class, Answers.CALLS_REAL_METHODS);
         this.connectionManager = mock(ConnectionManager.class);
         this.connection = mock(Connection.class);
         this.statement = mock(PreparedStatement.class);
         this.resultSet = mock(ResultSet.class);
-        this.playlistDTO = mock(PlaylistDTO.class);
 
         playlistDTO.setId(1);
         playlistDTO.setName("playlist");
@@ -51,17 +51,56 @@ public class BaseDAOTest {
 
         when(connectionManager.startConn()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
+
+        sut.setConnectionManager(connectionManager);
     }
 
     @Test
     void testGetAllSuccessFully() throws SQLException {
         when(sut.statementBuilder(connection, "SELECT", Optional.empty(), Optional.empty())).thenReturn(statement);
-        when(sut.buildFromResultSet(statement.executeQuery())).thenReturn(playlists);
+        when(statement.executeQuery()).thenReturn(resultSet);
+        when(sut.buildFromResultSet(resultSet)).thenReturn(playlists);
 
-        ArrayList result = sut.getAll();
+        ArrayList<PlaylistDTO> result = sut.getAll();
 
-        assertEquals(playlists.get(0), result.get(0));
+        assertEquals(playlists, result);
+    }
 
+    @Test
+    void testGetSuccessfully() throws SQLException {
+        when(sut.statementBuilder(connection, "SELECT", Optional.empty(), Optional.of(playlistDTO.getId()))).thenReturn(statement);
+        when(statement.executeQuery()).thenReturn(resultSet);
+        when(sut.buildFromResultSet(resultSet)).thenReturn(playlists);
 
+        PlaylistDTO result = sut.get(playlistDTO.getId());
+
+        assertEquals(playlists.get(0), result);
+    }
+
+    @Test
+    void testinsertSuccessfully() throws SQLException {
+        when(sut.statementBuilder(connection, "INSERT", Optional.of(playlistDTO), Optional.empty())).thenReturn(statement);
+
+        sut.insert(playlistDTO);
+
+        verify(statement, times(1)).executeUpdate();
+    }
+
+    @Test
+    void testUpdateSuccessfully() throws SQLException {
+        when(sut.statementBuilder(connection, "UPDATE", Optional.of(playlistDTO), Optional.of(playlistDTO.getId()))).thenReturn(statement);
+
+        sut.update(playlistDTO, playlistDTO.getId());
+
+        verify(statement, times(1)).executeUpdate();
+    }
+
+    @Test
+    void testDeleteSuccessfully() throws SQLException {
+        when(sut.statementBuilder(connection, "DELETE", Optional.empty(), Optional.of(playlistDTO.getId()))).thenReturn(statement);
+
+        sut.delete(playlistDTO.getId());
+
+        verify(statement, times(1)).executeUpdate();
     }
 }
