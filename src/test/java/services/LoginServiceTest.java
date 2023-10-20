@@ -80,18 +80,6 @@ public class LoginServiceTest {
 
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
-    @Test
-    void testVerifyToken() {
-        when(sut.getUserWithToken(token)).thenReturn(userDTO);
-        assertEquals(userDTO, sut.getUserWithToken(token));
-    }
-
-    @Test
-    void testGetUserId() {
-        when(sut.getUserWithToken(token)).thenReturn(userDTO);
-        assertEquals(userDTO.getId(), sut.getUserWithToken(token).getId());
-    }
 }
 
 

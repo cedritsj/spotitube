@@ -34,7 +34,7 @@ public class TrackServiceTest {
         sut = new TrackService();
 
         this.trackDAO = mock(TrackDAO.class);
-        this.trackResponseDTO = mock(TrackResponseDTO.class);
+        this.trackResponseDTO = new TrackResponseDTO();
         this.trackDTO = new TrackDTO();
         this.playlistDTO = new PlaylistDTO();
         this.sut.setTrackDAO(trackDAO);
@@ -49,23 +49,15 @@ public class TrackServiceTest {
         tracks.add(trackDTO);
 
         trackResponseDTO.setTracks(tracks);
-
-        playlistDTO.setId(1);
-        playlistDTO.setName("playlist");
-        playlistDTO.setOwner(true);
-        playlistDTO.setOwnerID(1);
-        playlistDTO.setTracks(tracks);
-        playlists.add(playlistDTO);
-
     }
 
-//    @Test
-//    void getAllTracksNotInPlaylistSuccessfullyWithRightResponse() {
-//        when(trackDAO.getTracksNotInPlaylist(anyInt())).thenReturn(tracks);
-//
-//        TrackResponseDTO result = sut.getTracksNotInPlaylist(1);
-//
-//        assertEquals(trackResponseDTO.getTracks(), result.getTracks());
-//        assertInstanceOf(TrackResponseDTO.class, result);
-//    }
+    @Test
+    void getAllTracksNotInPlaylistSuccessfullyWithRightResponse() {
+        when(trackDAO.getTracksNotInPlaylist(anyInt())).thenReturn(tracks);
+
+        TrackResponseDTO result = sut.getTracksNotInPlaylist(1);
+
+        assertEquals(trackResponseDTO.getTracks(), result.getTracks());
+        assertInstanceOf(TrackResponseDTO.class, result);
+    }
 }

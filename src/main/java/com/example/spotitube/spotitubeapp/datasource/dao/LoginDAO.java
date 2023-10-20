@@ -63,8 +63,9 @@ public class LoginDAO extends BaseDAO<UserDTO> {
         while (rs.next()) {
             UserDTO user = new UserDTO(
                     rs.getInt("id"),
-                    rs.getString("user"),
-                    rs.getString("token")
+                    rs.getString("token"),
+                    rs.getString("user")
+
             );
             users.add(user);
         }

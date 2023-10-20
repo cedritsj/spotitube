@@ -47,8 +47,6 @@ public class TrackResourceTest {
 
     @Test
     void testRetrieveAllTracksNotInPlaylistSuccessfully() {
-        doNothing().when(loginService).verifyToken(token);
-
         when(trackService.getTracksNotInPlaylist(1)).thenReturn(trackResponseDTO);
 
         Response result = sut.getTracksNotInPlaylist(token, 1);

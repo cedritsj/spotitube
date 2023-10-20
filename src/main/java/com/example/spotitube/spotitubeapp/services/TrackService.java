@@ -16,8 +16,6 @@ public class TrackService {
 
     private TrackDAO trackDAO;
 
-    private ConnectionManager connectionManager;
-
     public TrackResponseDTO getTracksNotInPlaylist(int id) {
         TrackResponseDTO trackResponseDTO = new TrackResponseDTO();
         trackResponseDTO.setTracks(trackDAO.getTracksNotInPlaylist(id));
@@ -27,10 +25,5 @@ public class TrackService {
     @Inject
     public void setTrackDAO(TrackDAO trackDAO) {
         this.trackDAO = trackDAO;
-    }
-
-    @Inject
-    public void setConnectionManager(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
     }
 }

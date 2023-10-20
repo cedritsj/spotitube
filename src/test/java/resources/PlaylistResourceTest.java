@@ -63,8 +63,6 @@ public class PlaylistResourceTest {
 
     @Test
     void testRetrieveAllPlaylistsSuccessfullyWithRightResponse() {
-        doNothing().when(loginService).verifyToken(token);
-
         when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
         when(loginService.getUserID(token)).thenReturn(userId);
 
@@ -76,7 +74,6 @@ public class PlaylistResourceTest {
 
     @Test
     void testAddPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(loginService).verifyToken(token);
         doNothing().when(playlistService).addPlaylist(playlistDTO, userId);
 
         when(loginService.getUserID(token)).thenReturn(userId);
@@ -90,7 +87,6 @@ public class PlaylistResourceTest {
 
     @Test
     void testDeletePlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(loginService).verifyToken(token);
         doNothing().when(playlistService).deletePlaylist(1);
         when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
         when(loginService.getUserID(token)).thenReturn(userId);
@@ -103,7 +99,6 @@ public class PlaylistResourceTest {
 
     @Test
     void testEditPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(loginService).verifyToken(token);
         doNothing().when(playlistService).editPlaylist(playlistDTO, 1);
         when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
         when(loginService.getUserID(token)).thenReturn(userId);
@@ -116,8 +111,6 @@ public class PlaylistResourceTest {
 
     @Test
     void testGetAllTracksFromPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(loginService).verifyToken(token);
-
         when(playlistService.getTracksPerPlaylist(playlistDTO.getId())).thenReturn(trackResponseDTO);
 
         Response result = sut.getTracksFromPlaylist(playlistDTO.getId(), token);
@@ -128,7 +121,6 @@ public class PlaylistResourceTest {
 
     @Test
     void testAddTrackToPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(loginService).verifyToken(token);
         doNothing().when(playlistService).addTrackToPlaylist(1, trackDTO);
 
         when(playlistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
@@ -141,7 +133,6 @@ public class PlaylistResourceTest {
 
     @Test
     void testRemoveTrackFromPlaylistSuccesfullyWithRightResponse() {
-        doNothing().when(loginService).verifyToken(token);
         doNothing().when(playlistService).removeTrackFromPlaylist(1, 1);
 
         when(playlistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
