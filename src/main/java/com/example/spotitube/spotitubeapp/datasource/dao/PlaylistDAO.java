@@ -58,7 +58,6 @@ public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM playlists WHERE id = ?;");
             statement.setInt(1, id.get());
             return statement;
-        }
-        return null;
+        } return null;
     }
 }
