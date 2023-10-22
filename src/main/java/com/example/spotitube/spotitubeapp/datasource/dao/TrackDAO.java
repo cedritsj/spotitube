@@ -47,9 +47,7 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
                 statement.setInt(2, id.get());
                 return statement;
             }
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
         return null;
     }
 
@@ -58,9 +56,7 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
             PreparedStatement statement = getConnection().prepareStatement("SELECT t.* FROM tracks t JOIN tracks_in_playlist tip ON t.id = tip.track_id WHERE tip.playlist_id = ?;");
             statement.setInt(1, id);
             return buildFromResultSet(statement.executeQuery());
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public ArrayList<TrackDTO> getTracksNotInPlaylist(int id) {
@@ -68,9 +64,7 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
             PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM tracks WHERE id NOT IN (SELECT track_id FROM tracks_in_playlist WHERE playlist_id = ?)");
             statement.setInt(1, id);
             return buildFromResultSet(statement.executeQuery());
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void insertTrackInPlaylist(int playlistId, TrackDTO trackDTO) {
@@ -80,21 +74,17 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
             statement.setInt(2, trackDTO.getId());
             statement.executeUpdate();
             closeConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
-    public void deleteTracksFromPlaylist(int id, int trackId) {
+    public void deleteTracksFromPlaylist(int playlistId, int trackId) {
         try {
             PreparedStatement statement = getConnection().prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
-            statement.setInt(1, id);
+            statement.setInt(1, playlistId);
             statement.setInt(2, trackId);
             statement.executeUpdate();
             closeConnection();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public Connection getConnection() {

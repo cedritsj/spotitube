@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 import static org.junit.jupiter.api.Assertions.*;
@@ -103,7 +104,7 @@ public class LoginDAOTest {
     }
 
     @Test
-    void testgetUserWithTokenStatementSuccessfully() throws SQLException {
+    void testGetUserWithTokenStatementSuccessfully() throws SQLException {
         String token = userDTO.getToken();
 
         when(connectionManager.startConn()).thenReturn(conn);
@@ -113,6 +114,19 @@ public class LoginDAOTest {
 
         verify(conn).prepareStatement("SELECT * FROM users WHERE token = ?;");
         verify(statement).setString(1, token);
+        assertEquals(statement, result);
+    }
+
+    @Test
+    void testStatementBuilderUpdate() throws SQLException {
+        when(connectionManager.startConn()).thenReturn(conn);
+        when(conn.prepareStatement(anyString())).thenReturn(statement);
+
+        PreparedStatement result = sut.statementBuilder(conn, "UPDATE", Optional.of(userDTO), Optional.of(userDTO.getId()));
+
+        verify(conn).prepareStatement("UPDATE users SET token = ? WHERE user = ?;");
+        verify(statement).setString(1, userDTO.getToken());
+        verify(statement).setString(2, userDTO.getUser());
         assertEquals(statement, result);
     }
 }

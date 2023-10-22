@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -129,5 +130,32 @@ public class TrackDAOTest {
         verify(statement).setInt(2, trackDTO.getId());
         verify(statement).executeUpdate();
         verify(connectionManager).closeConn();
+    }
+
+    @Test
+    void testDeleteTrackFromPlaylist() throws SQLException {
+        when(connectionManager.startConn()).thenReturn(conn);
+        when(conn.prepareStatement(anyString())).thenReturn(statement);
+
+        sut.deleteTracksFromPlaylist(1, 1);
+
+        verify(conn).prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
+        verify(statement).setInt(1, playlistDTO.getId());
+        verify(statement).setInt(2, trackDTO.getId());
+        verify(statement).executeUpdate();
+        verify(connectionManager).closeConn();
+    }
+
+    @Test
+    void testStatementBuilderUpdate() throws SQLException {
+        when(connectionManager.startConn()).thenReturn(conn);
+        when(conn.prepareStatement(anyString())).thenReturn(statement);
+
+        PreparedStatement result = sut.statementBuilder(conn, "UPDATE", Optional.of(trackDTO), Optional.of(trackDTO.getId()));
+
+        verify(conn).prepareStatement("UPDATE tracks SET offlineAvailable = ? WHERE id = ?;");
+        verify(statement).setBoolean(1, trackDTO.getOfflineAvailable());
+        verify(statement).setInt(2, trackDTO.getId());
+        assertEquals(statement, result);
     }
 }

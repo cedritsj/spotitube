@@ -33,15 +33,17 @@ public class LoginDAO extends BaseDAO<UserDTO> {
     }
 
     @Override
-    public PreparedStatement statementBuilder(Connection connection, String action, Optional<UserDTO> userDTO, Optional<Integer> id) throws SQLException {
-        if (action.equals("UPDATE") && userDTO.isPresent()) {
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET token = ? WHERE user = ?;");
-            statement.setString(1, userDTO.get().getToken());
-            statement.setString(2, userDTO.get().getUser());
-            return statement;
-        } else {
-            return null;
-        }
+    public PreparedStatement statementBuilder(Connection connection, String action, Optional<UserDTO> userDTO, Optional<Integer> id) {
+        try {
+            if (action.equals("UPDATE") && userDTO.isPresent()) {
+                PreparedStatement statement = connection.prepareStatement("UPDATE users SET token = ? WHERE user = ?;");
+                statement.setString(1, userDTO.get().getToken());
+                statement.setString(2, userDTO.get().getUser());
+                return statement;
+            } else {
+                return null;
+            }
+        } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public PreparedStatement getUserWithLoginRequestStatement(Connection connection, LoginRequestDTO loginRequestDTO) throws SQLException {
