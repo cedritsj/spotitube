@@ -49,6 +49,7 @@ public class LoginServiceTest {
         UserDTO result = sut.login(loginRequestDTO);
 
         assertInstanceOf(UserDTO.class, result);
+        assertEquals(userDTO.getToken(), result.getToken());
     }
 
     @Test

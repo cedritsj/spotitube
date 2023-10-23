@@ -57,7 +57,7 @@ public class TrackServiceTest {
 
         TrackResponseDTO result = sut.getTracksNotInPlaylist(1);
 
-        assertEquals(trackResponseDTO.getTracks(), result.getTracks());
         assertInstanceOf(TrackResponseDTO.class, result);
+        assertEquals(trackResponseDTO.getTracks(), result.getTracks());
     }
 }

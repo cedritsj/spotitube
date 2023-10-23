@@ -57,7 +57,6 @@ public class LoginDAOTest {
 
     @Test
     void testGetUserWithLoginRequestSuccessfully() throws SQLException {
-
         when(connectionManager.startConn()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(rs);
