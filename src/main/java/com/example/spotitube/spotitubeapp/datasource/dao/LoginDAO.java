@@ -1,11 +1,8 @@
 package com.example.spotitube.spotitubeapp.datasource.dao;
 
-import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
-import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
-import jakarta.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.sql.*;

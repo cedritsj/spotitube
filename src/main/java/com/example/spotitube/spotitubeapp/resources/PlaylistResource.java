@@ -1,6 +1,5 @@
 package com.example.spotitube.spotitubeapp.resources;
 
-import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import com.example.spotitube.spotitubeapp.services.LoginService;

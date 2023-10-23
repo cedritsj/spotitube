@@ -1,17 +1,12 @@
 package com.example.spotitube.spotitubeapp.datasource.dao;
 
-import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
-import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
-import com.example.spotitube.spotitubeapp.resources.dto.response.PlaylistResponseDTO;
-import jakarta.inject.Inject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
 
 public class PlaylistDAO extends BaseDAO<PlaylistDTO> {

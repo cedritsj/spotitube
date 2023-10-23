@@ -2,8 +2,6 @@ package com.example.spotitube.spotitubeapp.datasource.dao;
 
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
-import com.example.spotitube.spotitubeapp.resources.TrackResource;
-import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import jakarta.inject.Inject;
 
@@ -12,7 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class TrackDAO extends BaseDAO<TrackDTO> {
