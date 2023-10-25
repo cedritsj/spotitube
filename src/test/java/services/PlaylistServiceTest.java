@@ -101,7 +101,7 @@ public class PlaylistServiceTest {
 
     @Test
     void testGetAllTracksPerPlaylistSuccessfullyWithRightResponse() {
-        when(trackDAO.getTracksFromPlaylist(playlistDTO.getId())).thenReturn(tracks);
+        when(trackDAO.getAllTracksInPlaylist(playlistDTO.getId())).thenReturn(tracks);
 
         TrackResponseDTO result = sut.getTracksPerPlaylist(playlistDTO.getId());
 
@@ -111,16 +111,16 @@ public class PlaylistServiceTest {
 
     @Test
     void testAddTrackToPlaylistSuccessfully() {
-        sut.addTrackToPlaylist(playlistDTO.getId(), trackDTO);
+        sut.addTrackToPlaylist(trackDTO, playlistDTO.getId());
 
         verify(trackDAO, times(1)).update(trackDTO, trackDTO.getId());
-        verify(trackDAO, times(1)).insertTrackInPlaylist(playlistDTO.getId(), trackDTO);
+        verify(trackDAO, times(1)).insertTrackInPlaylist(trackDTO, playlistDTO.getId());
     }
 
     @Test
     void testDeleteTrackFromPlaylistSuccessfully() {
         sut.removeTrackFromPlaylist(playlistDTO.getId(), trackDTO.getId());
 
-        verify(trackDAO, times(1)).deleteTracksFromPlaylist(playlistDTO.getId(), trackDTO.getId());
+        verify(trackDAO, times(1)).deleteTrackFromPlaylist(playlistDTO.getId(), trackDTO.getId());
     }
 }

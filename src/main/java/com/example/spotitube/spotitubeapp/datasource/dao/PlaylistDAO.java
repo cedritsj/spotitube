@@ -12,20 +12,6 @@ import java.util.Optional;
 public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
 
     @Override
-    public ArrayList<PlaylistDTO> buildFromResultSet(ResultSet rs) throws SQLException {
-        ArrayList<PlaylistDTO> playlists = new ArrayList<>();
-        while (rs.next()) {
-            PlaylistDTO playlist = new PlaylistDTO(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getInt("owner"));
-            playlists.add(playlist);
-        }
-        rs.close();
-        return playlists;
-    }
-
-    @Override
     public PreparedStatement statementBuilder(Connection connection, String action, Optional<PlaylistDTO> playlistDTO, Optional<Integer> id) throws SQLException {
         if(action.equals("SELECT") && id.isPresent()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM playlists WHERE id = ?;");
@@ -54,5 +40,19 @@ public class PlaylistDAO extends BaseDAO<PlaylistDTO> {
             statement.setInt(1, id.get());
             return statement;
         } return null;
+    }
+
+    @Override
+    public ArrayList<PlaylistDTO> buildFromResultSet(ResultSet rs) throws SQLException {
+        ArrayList<PlaylistDTO> playlists = new ArrayList<>();
+        while (rs.next()) {
+            PlaylistDTO playlist = new PlaylistDTO(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("owner"));
+            playlists.add(playlist);
+        }
+        rs.close();
+        return playlists;
     }
 }

@@ -81,12 +81,12 @@ public class PlaylistResource {
     @Path("/{id}/tracks")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTrackToPlaylist(@PathParam("id") int id, TrackDTO trackDTO, @QueryParam("token") String token) {
+    public Response addTrackToPlaylist(@PathParam("id") int playlistId, TrackDTO trackDTO, @QueryParam("token") String token) {
         loginService.verifyToken(token);
-        playlistService.addTrackToPlaylist(id, trackDTO);
+        playlistService.addTrackToPlaylist(trackDTO, playlistId);
         return Response
                 .status(201)
-                .entity(playlistService.getTracksPerPlaylist(id))
+                .entity(playlistService.getTracksPerPlaylist(playlistId))
                 .build();
     }
 
@@ -94,12 +94,12 @@ public class PlaylistResource {
     @Path("/{id}/tracks/{trackId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response removeTrackFromPlaylist(@PathParam("id") int id, @PathParam("trackId") int trackId, @QueryParam("token") String token) {
+    public Response removeTrackFromPlaylist(@PathParam("id") int playlistId, @PathParam("trackId") int trackId, @QueryParam("token") String token) {
         loginService.verifyToken(token);
-        playlistService.removeTrackFromPlaylist(id, trackId);
+        playlistService.removeTrackFromPlaylist(trackId, playlistId);
         return Response
                 .status(200)
-                .entity(playlistService.getTracksPerPlaylist(id))
+                .entity(playlistService.getTracksPerPlaylist(playlistId))
                 .build();
     }
 

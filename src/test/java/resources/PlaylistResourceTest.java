@@ -121,7 +121,7 @@ public class PlaylistResourceTest {
 
     @Test
     void testAddTrackToPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(playlistService).addTrackToPlaylist(1, trackDTO);
+        doNothing().when(playlistService).addTrackToPlaylist(trackDTO,1);
 
         when(playlistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
 

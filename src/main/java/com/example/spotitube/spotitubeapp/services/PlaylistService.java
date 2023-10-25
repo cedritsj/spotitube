@@ -42,16 +42,16 @@ public class PlaylistService {
     }
 
     public TrackResponseDTO getTracksPerPlaylist(int id) {
-        return new TrackResponseDTO(trackDAO.getTracksFromPlaylist(id));
+        return new TrackResponseDTO(trackDAO.getAllTracksInPlaylist(id));
     }
 
-    public void addTrackToPlaylist(int playlistId, TrackDTO trackDTO) {
+    public void addTrackToPlaylist(TrackDTO trackDTO, int playlistId) {
         trackDAO.update(trackDTO, trackDTO.getId());
-        trackDAO.insertTrackInPlaylist(playlistId, trackDTO);
+        trackDAO.insertTrackInPlaylist(trackDTO, playlistId);
     }
 
-    public void removeTrackFromPlaylist(int id, int trackId) {
-        trackDAO.deleteTracksFromPlaylist(id, trackId);
+    public void removeTrackFromPlaylist(int trackId, int playlistId) {
+        trackDAO.deleteTrackFromPlaylist(trackId, playlistId);
     }
 
     @Inject

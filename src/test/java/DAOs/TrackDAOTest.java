@@ -1,12 +1,9 @@
 package DAOs;
 
-import com.example.spotitube.spotitubeapp.datasource.dao.LoginDAO;
 import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
-import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
-import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -72,7 +69,7 @@ public class TrackDAOTest {
         when(rs.getString("description")).thenReturn(trackDTO.getDescription());
         when(rs.getBoolean("offlineAvailable")).thenReturn(trackDTO.getOfflineAvailable());
 
-        ArrayList<TrackDTO> result = sut.getTracksFromPlaylist(1);
+        ArrayList<TrackDTO> result = sut.getAllTracksInPlaylist(1);
 
         verify(statement).setInt(1, trackDTO.getId());
 
@@ -103,7 +100,7 @@ public class TrackDAOTest {
         when(rs.getString("description")).thenReturn(trackDTO.getDescription());
         when(rs.getBoolean("offlineAvailable")).thenReturn(trackDTO.getOfflineAvailable());
 
-        ArrayList<TrackDTO> result = sut.getTracksNotInPlaylist(1);
+        ArrayList<TrackDTO> result = sut.getAllTracksNotInPlaylist(1);
 
         verify(statement).setInt(1, trackDTO.getId());
 
@@ -123,7 +120,7 @@ public class TrackDAOTest {
         when(connectionManager.startConn()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
-        sut.insertTrackInPlaylist(1, trackDTO);
+        sut.insertTrackInPlaylist(trackDTO,1);
 
         verify(conn).prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
         verify(statement).setInt(1, playlistDTO.getId());
@@ -137,7 +134,7 @@ public class TrackDAOTest {
         when(connectionManager.startConn()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
-        sut.deleteTracksFromPlaylist(1, 1);
+        sut.deleteTrackFromPlaylist(1, 1);
 
         verify(conn).prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
         verify(statement).setInt(1, playlistDTO.getId());

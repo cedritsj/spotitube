@@ -1,7 +1,6 @@
 package services;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
-import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.TrackResponseDTO;
@@ -9,7 +8,6 @@ import com.example.spotitube.spotitubeapp.services.TrackService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,7 +51,7 @@ public class TrackServiceTest {
 
     @Test
     void getAllTracksNotInPlaylistSuccessfullyWithRightResponse() {
-        when(trackDAO.getTracksNotInPlaylist(anyInt())).thenReturn(tracks);
+        when(trackDAO.getAllTracksNotInPlaylist(anyInt())).thenReturn(tracks);
 
         TrackResponseDTO result = sut.getTracksNotInPlaylist(1);
 
