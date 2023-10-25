@@ -1,13 +1,10 @@
-package DAOs;
+package com.example.spotitube.spotitubeapp.datasource.dao;
 
-import com.example.spotitube.spotitubeapp.datasource.dao.BaseDAO;
-import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
-import org.mockito.Mockito;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,7 +46,7 @@ public class BaseDAOTest {
         playlistDTO.setOwnerID(1);
         playlists.add(playlistDTO);
 
-        when(connectionManager.startConn()).thenReturn(connection);
+        when(connectionManager.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(anyString())).thenReturn(statement);
 
         sut.setConnectionManager(connectionManager);

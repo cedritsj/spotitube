@@ -1,4 +1,4 @@
-package services;
+package com.example.spotitube.spotitubeapp.services;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;

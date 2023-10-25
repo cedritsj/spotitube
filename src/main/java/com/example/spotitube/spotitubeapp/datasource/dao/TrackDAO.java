@@ -14,35 +14,39 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
 
     public ArrayList<TrackDTO> getAllTracksInPlaylist(int id) {
         try {
+            Connection connection = getConnection();
             PreparedStatement statement = statementBuilder(getConnection(), "SELECT", Optional.empty(), Optional.of(id));
             ArrayList<TrackDTO> result = buildFromResultSet(statement.executeQuery());
-            closeConnection();
+            connection.close();
             return result;
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void insertTrackInPlaylist(TrackDTO trackDTO, int playlistId) {
         try {
-            PreparedStatement statement = statementBuilder(getConnection(), "INSERT", Optional.of(trackDTO), Optional.of(playlistId));
+            Connection connection = getConnection();
+            PreparedStatement statement = statementBuilder(connection, "INSERT", Optional.of(trackDTO), Optional.of(playlistId));
             statement.executeUpdate();
-            closeConnection();
+            connection.close();
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void deleteTrackFromPlaylist(int trackId, int playlistId) {
         try {
+            Connection connection = getConnection();
             TrackDTO trackDTO = new TrackDTO(trackId);
-            PreparedStatement statement = statementBuilder(getConnection(), "DELETE", Optional.of(trackDTO), Optional.of(playlistId));
+            PreparedStatement statement = statementBuilder(connection, "DELETE", Optional.of(trackDTO), Optional.of(playlistId));
             statement.executeUpdate();
-            closeConnection();
+            connection.close();
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public ArrayList<TrackDTO> getAllTracksNotInPlaylist(int id) {
         try {
-            PreparedStatement statement = getAllTracksNotInPlaylistStatement(id);
+            Connection connection = getConnection();
+            PreparedStatement statement = getAllTracksNotInPlaylistStatement(connection, id);
             ArrayList<TrackDTO> result = buildFromResultSet(statement.executeQuery());
-            closeConnection();
+            connection.close();
             return result;
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
@@ -85,8 +89,8 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
         return null;
     }
 
-    private PreparedStatement getAllTracksNotInPlaylistStatement(int id) throws SQLException {
-        PreparedStatement statement = getConnection().prepareStatement("SELECT * FROM tracks WHERE id NOT IN (SELECT track_id FROM tracks_in_playlist WHERE playlist_id = ?)");
+    private PreparedStatement getAllTracksNotInPlaylistStatement(Connection connection, int id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM tracks WHERE id NOT IN (SELECT track_id FROM tracks_in_playlist WHERE playlist_id = ?)");
         statement.setInt(1, id);
         return statement;
     }

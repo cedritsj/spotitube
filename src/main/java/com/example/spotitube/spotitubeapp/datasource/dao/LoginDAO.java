@@ -13,18 +13,20 @@ public class LoginDAO extends BaseDAO<UserDTO> {
 
     public UserDTO getUserWithLoginRequest(LoginRequestDTO loginRequestDTO) {
         try {
-            PreparedStatement statement = getUserWithLoginRequestStatement(getConnection(), loginRequestDTO);
+            Connection connection = getConnection();
+            PreparedStatement statement = getUserWithLoginRequestStatement(connection, loginRequestDTO);
             UserDTO result = buildFromResultSet(statement.executeQuery()).get(0);
-            closeConnection();
+            connection.close();
             return result;
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public Optional<UserDTO> getUserWithToken(String token) {
         try {
-            PreparedStatement statement = getUserWithTokenStatement(getConnection(), token);
+            Connection connection = getConnection();
+            PreparedStatement statement = getUserWithTokenStatement(connection, token);
             Optional<UserDTO> result = Optional.of(buildFromResultSet(statement.executeQuery()).get(0));
-            closeConnection();
+            connection.close();
             return result;
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }

@@ -1,9 +1,6 @@
-package DAOs;
+package com.example.spotitube.spotitubeapp.datasource.dao;
 
-import com.example.spotitube.spotitubeapp.datasource.dao.LoginDAO;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
-import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;
-import com.example.spotitube.spotitubeapp.exceptions.DatabaseException;
 import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -57,7 +54,7 @@ public class LoginDAOTest {
 
     @Test
     void testGetUserWithLoginRequestSuccessfully() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true, false);
@@ -67,13 +64,12 @@ public class LoginDAOTest {
 
         UserDTO result = sut.getUserWithLoginRequest(loginRequestDTO);
 
-        verify(connectionManager).closeConn();
         assertEquals(userDTOS.get(0).getUser(), result.getUser());
     }
 
     @Test
     void testGetUserWithLoginRequestStatementSuccessfully() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.getUserWithLoginRequestStatement(conn, loginRequestDTO);
@@ -88,7 +84,7 @@ public class LoginDAOTest {
     void testGetUserWithTokenSuccessfully() throws SQLException {
         String token = userDTO.getToken();
 
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true, false);
@@ -98,7 +94,6 @@ public class LoginDAOTest {
 
         UserDTO result = sut.getUserWithToken(token).get();
 
-        verify(connectionManager).closeConn();
         assertEquals(userDTO.getToken(), result.getToken());
     }
 
@@ -106,7 +101,7 @@ public class LoginDAOTest {
     void testGetUserWithTokenStatementSuccessfully() throws SQLException {
         String token = userDTO.getToken();
 
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.getUserWithTokenStatement(conn, token);
@@ -118,7 +113,7 @@ public class LoginDAOTest {
 
     @Test
     void testStatementBuilderUpdate() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.statementBuilder(conn, "UPDATE", Optional.of(userDTO), Optional.of(userDTO.getId()));

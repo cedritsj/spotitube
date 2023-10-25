@@ -1,4 +1,4 @@
-package resources;
+package com.example.spotitube.spotitubeapp.resources;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
 import com.example.spotitube.spotitubeapp.resources.PlaylistResource;

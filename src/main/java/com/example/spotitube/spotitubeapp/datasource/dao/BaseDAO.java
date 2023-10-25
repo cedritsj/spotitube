@@ -14,9 +14,10 @@ public abstract class BaseDAO<T> {
 
     public ArrayList<T> getAll() {
         try {
-            PreparedStatement statement = statementBuilder(getConnection(), "SELECT", Optional.empty(), Optional.empty());
+            Connection connection = getConnection();
+            PreparedStatement statement = statementBuilder(connection, "SELECT", Optional.empty(), Optional.empty());
             ArrayList<T> result = buildFromResultSet(statement.executeQuery());
-            closeConnection();
+            connection.close();
             return result;
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
@@ -24,34 +25,38 @@ public abstract class BaseDAO<T> {
 
     public T get(int id) {
         try {
-            PreparedStatement statement = statementBuilder(getConnection(), "SELECT", Optional.empty(), Optional.of(id));
+            Connection connection = getConnection();
+            PreparedStatement statement = statementBuilder(connection, "SELECT", Optional.empty(), Optional.of(id));
             T result = buildFromResultSet(statement.executeQuery()).get(0);
-            closeConnection();
+            connection.close();
             return result;
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void insert(T t) {
         try {
-            PreparedStatement statement = statementBuilder(getConnection(), "INSERT", Optional.of(t), Optional.empty());
+            Connection connection = getConnection();
+            PreparedStatement statement = statementBuilder(connection, "INSERT", Optional.of(t), Optional.empty());
             statement.executeUpdate();
-            closeConnection();
+            connection.close();
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void update(T t, int id) {
         try {
-            PreparedStatement statement = statementBuilder(getConnection(), "UPDATE", Optional.of(t), Optional.of(id));
+            Connection connection = getConnection();
+            PreparedStatement statement = statementBuilder(connection, "UPDATE", Optional.of(t), Optional.of(id));
             statement.executeUpdate();
-            closeConnection();
+            connection.close();
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
     public void delete(int id) {
         try {
-            PreparedStatement statement = statementBuilder(getConnection(), "DELETE", Optional.empty(), Optional.of(id));
+            Connection connection = getConnection();
+            PreparedStatement statement = statementBuilder(connection, "DELETE", Optional.empty(), Optional.of(id));
             statement.executeUpdate();
-            closeConnection();
+            connection.close();
         } catch (SQLException e) { throw new DatabaseException(e.getMessage()); }
     }
 
@@ -59,12 +64,8 @@ public abstract class BaseDAO<T> {
 
     public abstract ArrayList<T> buildFromResultSet(ResultSet rs) throws SQLException;
 
-    public Connection getConnection() {
-        return connectionManager.startConn();
-    }
-
-    public void closeConnection() {
-        connectionManager.closeConn();
+    public Connection getConnection() throws SQLException {
+        return connectionManager.getConnection();
     }
 
     @Inject

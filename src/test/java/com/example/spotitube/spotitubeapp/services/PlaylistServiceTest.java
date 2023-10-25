@@ -1,4 +1,4 @@
-package services;
+package com.example.spotitube.spotitubeapp.services;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
 import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
@@ -35,12 +35,12 @@ public class PlaylistServiceTest {
         this.sut = new PlaylistService();
 
         this.playlistDAO = mock(PlaylistDAO.class);
-        this.playlistDTO = mock(PlaylistDTO.class);
-        this.playlistResponseDTO = new PlaylistResponseDTO(playlists, 0);
-        this.trackResponseDTO = mock(TrackResponseDTO.class);
         this.trackDAO = mock(TrackDAO.class);
-        this.trackDTO = mock(TrackDTO.class);
 
+        this.trackDTO = new TrackDTO();
+        this.playlistDTO = new PlaylistDTO();
+        this.playlistResponseDTO = new PlaylistResponseDTO(playlists, 0);
+        this.trackResponseDTO = new TrackResponseDTO();
 
         this.sut.setPlaylistDAO(playlistDAO);
         this.sut.setTrackDAO(trackDAO);

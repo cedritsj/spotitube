@@ -1,6 +1,5 @@
-package DAOs;
+package com.example.spotitube.spotitubeapp.datasource.dao;
 
-import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
@@ -55,7 +54,7 @@ public class TrackDAOTest {
 
     @Test
     void testGetAllTracksFromPlaylist() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true, false);
@@ -86,7 +85,7 @@ public class TrackDAOTest {
 
     @Test
     void testGetTracksNotInPlaylistSuccessfully() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
         when(statement.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true, false);
@@ -117,7 +116,7 @@ public class TrackDAOTest {
 
     @Test
     void testInsertTrackIntoPlaylistSuccessfully() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         sut.insertTrackInPlaylist(trackDTO,1);
@@ -126,12 +125,11 @@ public class TrackDAOTest {
         verify(statement).setInt(1, playlistDTO.getId());
         verify(statement).setInt(2, trackDTO.getId());
         verify(statement).executeUpdate();
-        verify(connectionManager).closeConn();
     }
 
     @Test
     void testDeleteTrackFromPlaylist() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         sut.deleteTrackFromPlaylist(1, 1);
@@ -140,12 +138,11 @@ public class TrackDAOTest {
         verify(statement).setInt(1, playlistDTO.getId());
         verify(statement).setInt(2, trackDTO.getId());
         verify(statement).executeUpdate();
-        verify(connectionManager).closeConn();
     }
 
     @Test
     void testStatementBuilderUpdate() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.statementBuilder(conn, "UPDATE", Optional.of(trackDTO), Optional.of(trackDTO.getId()));

@@ -10,30 +10,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ConnectionManager {
-
-    private Connection connection;
     private DataProperties properties;
 
-    public Connection startConn() {
-        try {
-            Class.forName(properties.driverString());
-            connection = DriverManager.getConnection(properties.connectionString());
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-        return connection;
-    }
-
-    public void closeConn() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            throw new DatabaseException(e.getMessage());
-        }
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(properties.getConnectionString());
     }
 
     @Inject
-    private void setDataProperties(DataProperties properties) {
+    public void setDataProperties(DataProperties properties) {
         this.properties = properties;
     }
 

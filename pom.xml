@@ -104,5 +104,11 @@
             <artifactId>jersey-common</artifactId>
             <version>3.1.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.openpojo</groupId>
+            <artifactId>openpojo</artifactId>
+            <version>0.9.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

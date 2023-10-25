@@ -1,4 +1,4 @@
-package services;
+package com.example.spotitube.spotitubeapp.services;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.LoginDAO;
 import com.example.spotitube.spotitubeapp.exceptions.AuthenticationException;

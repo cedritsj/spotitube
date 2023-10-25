@@ -1,4 +1,4 @@
-package resources;
+package com.example.spotitube.spotitubeapp.resources;
 
 import com.example.spotitube.spotitubeapp.resources.LoginResource;
 import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;

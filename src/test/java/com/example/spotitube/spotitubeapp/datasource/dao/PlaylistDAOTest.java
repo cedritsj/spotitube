@@ -1,10 +1,7 @@
-package DAOs;
+package com.example.spotitube.spotitubeapp.datasource.dao;
 
-import com.example.spotitube.spotitubeapp.datasource.dao.PlaylistDAO;
-import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
 import com.example.spotitube.spotitubeapp.datasource.dbconnection.ConnectionManager;
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
-import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,7 +56,7 @@ public class PlaylistDAOTest {
                 "         JOIN users u ON p.owner = u.id" +
                 "         GROUP BY p.id;";
 
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.statementBuilder(conn, "SELECT", Optional.empty(), Optional.empty());
@@ -70,7 +67,7 @@ public class PlaylistDAOTest {
 
     @Test
     void testStatementBuilderGet() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.statementBuilder(conn, "SELECT", Optional.empty(), Optional.of(playlistDTO.getId()));
@@ -82,7 +79,7 @@ public class PlaylistDAOTest {
 
     @Test
     void testStatementBuilderInsert() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.statementBuilder(conn, "INSERT", Optional.of(playlistDTO), Optional.empty());
@@ -95,7 +92,7 @@ public class PlaylistDAOTest {
 
     @Test
     void testStatementBuilderUpdate() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.statementBuilder(conn, "UPDATE", Optional.of(playlistDTO), Optional.of(playlistDTO.getId()));
@@ -108,7 +105,7 @@ public class PlaylistDAOTest {
 
     @Test
     void testStatementBuilderDelete() throws SQLException {
-        when(connectionManager.startConn()).thenReturn(conn);
+        when(connectionManager.getConnection()).thenReturn(conn);
         when(conn.prepareStatement(anyString())).thenReturn(statement);
 
         PreparedStatement result = sut.statementBuilder(conn, "DELETE", Optional.empty(), Optional.of(playlistDTO.getId()));

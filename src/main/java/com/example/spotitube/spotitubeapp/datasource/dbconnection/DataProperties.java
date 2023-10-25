@@ -21,11 +21,6 @@ public class DataProperties {
         }
     }
 
-    public String connectionString() { return properties.getProperty("connectionString"); }
-
-    public String driverString() {
-        return properties.getProperty("driver");
-    }
-
+    public String getConnectionString() { return properties.getProperty("connectionString"); }
 
 }
