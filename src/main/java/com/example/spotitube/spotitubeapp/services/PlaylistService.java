@@ -6,10 +6,14 @@ import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.PlaylistResponseDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.TrackResponseDTO;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 
+@Default
+@ApplicationScoped
 public class PlaylistService {
 
     private PlaylistDAO playlistDAO;

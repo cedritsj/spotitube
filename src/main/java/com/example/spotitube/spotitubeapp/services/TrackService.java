@@ -2,8 +2,12 @@ package com.example.spotitube.spotitubeapp.services;
 
 import com.example.spotitube.spotitubeapp.datasource.dao.TrackDAO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.TrackResponseDTO;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 
+@Default
+@ApplicationScoped
 public class TrackService {
 
     private TrackDAO trackDAO;
