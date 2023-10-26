@@ -3,7 +3,6 @@ package com.example.spotitube.spotitubeapp.resources.dto.response;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TrackResponseDTO {
 

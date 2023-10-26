@@ -2,8 +2,6 @@ package com.example.spotitube.spotitubeapp.resources;
 
 import com.example.spotitube.spotitubeapp.resources.interfaces.ILoginService;
 import com.example.spotitube.spotitubeapp.resources.interfaces.ITrackService;
-import com.example.spotitube.spotitubeapp.services.LoginService;
-import com.example.spotitube.spotitubeapp.services.TrackService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;

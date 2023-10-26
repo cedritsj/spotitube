@@ -2,7 +2,6 @@ package com.example.spotitube.spotitubeapp.resources;
 
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
 import com.example.spotitube.spotitubeapp.resources.interfaces.ILoginService;
-import com.example.spotitube.spotitubeapp.services.LoginService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
