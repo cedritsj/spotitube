@@ -28,7 +28,7 @@ public class TrackDAOTest {
 
     private Connection conn;
 
-    private TrackDTO trackDTO, notInPlaylistDTO;
+    private TrackDTO trackDTO;
 
     private ArrayList<TrackDTO> tracks;
 

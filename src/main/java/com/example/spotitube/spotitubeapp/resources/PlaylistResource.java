@@ -2,6 +2,8 @@ package com.example.spotitube.spotitubeapp.resources;
 
 import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
+import com.example.spotitube.spotitubeapp.resources.interfaces.ILoginService;
+import com.example.spotitube.spotitubeapp.resources.interfaces.IPlaylistService;
 import com.example.spotitube.spotitubeapp.services.LoginService;
 import com.example.spotitube.spotitubeapp.services.PlaylistService;
 import jakarta.inject.Inject;
@@ -12,8 +14,8 @@ import jakarta.ws.rs.core.Response;
 @Path("/playlists")
 public class PlaylistResource {
 
-    private PlaylistService playlistService;
-    private LoginService loginService;
+    private IPlaylistService playlistService;
+    private ILoginService loginService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -104,12 +106,12 @@ public class PlaylistResource {
     }
 
     @Inject
-    public void setLoginService(LoginService loginService) {
+    public void setLoginService(ILoginService loginService) {
         this.loginService = loginService;
     }
 
     @Inject
-    public void setPlaylistService(PlaylistService playlistService) {
+    public void setPlaylistService(IPlaylistService playlistService) {
         this.playlistService = playlistService;
     }
 }

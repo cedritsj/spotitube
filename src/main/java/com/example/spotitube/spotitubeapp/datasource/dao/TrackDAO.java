@@ -63,7 +63,7 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
 
         switch (action) {
             case "SELECT" -> {
-                PreparedStatement statement = getConnection().prepareStatement("SELECT t.* FROM tracks t JOIN tracks_in_playlist tip ON t.id = tip.track_id WHERE tip.playlist_id = ?;");
+                PreparedStatement statement = connection.prepareStatement("SELECT t.* FROM tracks t JOIN tracks_in_playlist tip ON t.id = tip.track_id WHERE tip.playlist_id = ?;");
                 statement.setInt(1, id.get());
                 return statement;
             }
@@ -74,13 +74,13 @@ public class TrackDAO extends BaseDAO<TrackDTO> {
                 return statement;
             }
             case "INSERT" -> {
-                PreparedStatement statement = getConnection().prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO tracks_in_playlist (playlist_id, track_id) VALUES (?, ?);");
                 statement.setInt(1, id.get());
                 statement.setInt(2, trackDTO.get().getId());
                 return statement;
             }
             case "DELETE" -> {
-                PreparedStatement statement = getConnection().prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM tracks_in_playlist WHERE playlist_id = ? AND track_id = ?;");
                 statement.setInt(1, id.get());
                 statement.setInt(2, trackDTO.get().getId());
                 return statement;

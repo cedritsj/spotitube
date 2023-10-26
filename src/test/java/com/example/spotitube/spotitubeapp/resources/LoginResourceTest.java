@@ -3,7 +3,7 @@ package com.example.spotitube.spotitubeapp.resources;
 import com.example.spotitube.spotitubeapp.resources.LoginResource;
 import com.example.spotitube.spotitubeapp.resources.dto.UserDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
-import com.example.spotitube.spotitubeapp.services.LoginService;
+import com.example.spotitube.spotitubeapp.resources.interfaces.ILoginService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 public class LoginResourceTest {
     private LoginResource sut;
-    private LoginService loginService;
+    private ILoginService ILoginService;
     private LoginRequestDTO loginRequestDTO;
     private UserDTO userDTO;
 
@@ -27,9 +27,9 @@ public class LoginResourceTest {
     public void setup() {
         this.sut = new LoginResource();
 
-        this.loginService = mock(LoginService.class);
+        this.ILoginService = mock(ILoginService.class);
 
-        this.sut.setLoginService(loginService);
+        this.sut.setLoginService(ILoginService);
 
         this.loginRequestDTO = new LoginRequestDTO(user, password);
 
@@ -38,7 +38,7 @@ public class LoginResourceTest {
 
     @Test
     void testLoginSuccessfullyReturnResponse200() {
-        when(loginService.login(loginRequestDTO)).thenReturn(userDTO);
+        when(ILoginService.login(loginRequestDTO)).thenReturn(userDTO);
 
         Response result = sut.login(loginRequestDTO);
 

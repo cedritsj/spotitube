@@ -1,6 +1,7 @@
 package com.example.spotitube.spotitubeapp.resources;
 
 import com.example.spotitube.spotitubeapp.resources.dto.request.LoginRequestDTO;
+import com.example.spotitube.spotitubeapp.resources.interfaces.ILoginService;
 import com.example.spotitube.spotitubeapp.services.LoginService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -13,7 +14,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/login")
 public class LoginResource {
 
-    private LoginService loginService;
+    private ILoginService loginService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -26,7 +27,7 @@ public class LoginResource {
     }
 
     @Inject
-    public void setLoginService(LoginService loginService) {
+    public void setLoginService(ILoginService loginService) {
         this.loginService = loginService;
     }
 }

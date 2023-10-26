@@ -1,5 +1,7 @@
 package com.example.spotitube.spotitubeapp.resources;
 
+import com.example.spotitube.spotitubeapp.resources.interfaces.ILoginService;
+import com.example.spotitube.spotitubeapp.resources.interfaces.ITrackService;
 import com.example.spotitube.spotitubeapp.services.LoginService;
 import com.example.spotitube.spotitubeapp.services.TrackService;
 import jakarta.inject.Inject;
@@ -10,9 +12,9 @@ import jakarta.ws.rs.core.Response;
 @Path("/tracks")
 public class TrackResource {
 
-    private LoginService loginService;
+    private ILoginService loginService;
 
-    private TrackService trackService;
+    private ITrackService trackService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -25,12 +27,12 @@ public class TrackResource {
     }
 
     @Inject
-    public void setLoginService(LoginService loginService) {
+    public void setLoginService(ILoginService loginService) {
         this.loginService = loginService;
     }
 
     @Inject
-    public void setTrackService(TrackService trackService) {
+    public void setTrackService(ITrackService trackService) {
         this.trackService = trackService;
     }
 

@@ -6,8 +6,8 @@ import com.example.spotitube.spotitubeapp.resources.dto.PlaylistDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.TrackDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.PlaylistResponseDTO;
 import com.example.spotitube.spotitubeapp.resources.dto.response.TrackResponseDTO;
-import com.example.spotitube.spotitubeapp.services.LoginService;
-import com.example.spotitube.spotitubeapp.services.PlaylistService;
+import com.example.spotitube.spotitubeapp.resources.interfaces.ILoginService;
+import com.example.spotitube.spotitubeapp.resources.interfaces.IPlaylistService;
 import com.example.spotitube.spotitubeapp.services.TrackService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,8 +25,8 @@ public class PlaylistResourceTest {
     private final int userId = 1;
     private final String token = "token";
     private PlaylistResource sut;
-    private PlaylistService playlistService;
-    private LoginService loginService;
+    private IPlaylistService IPlaylistService;
+    private ILoginService ILoginService;
     private PlaylistDTO playlistDTO;
     private TrackDTO trackDTO;
     private TrackResponseDTO trackResponseDTO;
@@ -37,8 +37,8 @@ public class PlaylistResourceTest {
     public void Setup() {
         this.sut = new PlaylistResource();
 
-        this.playlistService = mock(PlaylistService.class);
-        this.loginService = mock(LoginService.class);
+        this.IPlaylistService = mock(IPlaylistService.class);
+        this.ILoginService = mock(ILoginService.class);
 
         this.playlistDTO = mock(PlaylistDTO.class);
         this.trackDTO = mock(TrackDTO.class);
@@ -46,8 +46,8 @@ public class PlaylistResourceTest {
         this.playlistResponseDTO = new PlaylistResponseDTO();
         this.trackResponseDTO = new TrackResponseDTO();
 
-        this.sut.setPlaylistService(playlistService);
-        this.sut.setLoginService(loginService);
+        this.sut.setPlaylistService(IPlaylistService);
+        this.sut.setLoginService(ILoginService);
 
         trackDTO.setId(1);
         ArrayList<TrackDTO> tracks = new ArrayList<>();
@@ -63,8 +63,8 @@ public class PlaylistResourceTest {
 
     @Test
     void testRetrieveAllPlaylistsSuccessfullyWithRightResponse() {
-        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
-        when(loginService.getUserID(token)).thenReturn(userId);
+        when(IPlaylistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+        when(ILoginService.getUserID(token)).thenReturn(userId);
 
         Response result = sut.getPlaylists(token);
 
@@ -74,10 +74,10 @@ public class PlaylistResourceTest {
 
     @Test
     void testAddPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(playlistService).addPlaylist(playlistDTO, userId);
+        doNothing().when(IPlaylistService).addPlaylist(playlistDTO, userId);
 
-        when(loginService.getUserID(token)).thenReturn(userId);
-        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+        when(ILoginService.getUserID(token)).thenReturn(userId);
+        when(IPlaylistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
 
         Response result = sut.addPlaylist(playlistDTO, token);
 
@@ -87,9 +87,9 @@ public class PlaylistResourceTest {
 
     @Test
     void testDeletePlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(playlistService).deletePlaylist(1);
-        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
-        when(loginService.getUserID(token)).thenReturn(userId);
+        doNothing().when(IPlaylistService).deletePlaylist(1);
+        when(IPlaylistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+        when(ILoginService.getUserID(token)).thenReturn(userId);
 
         Response result = sut.deletePlaylist(playlistDTO.getId(), token);
 
@@ -99,9 +99,9 @@ public class PlaylistResourceTest {
 
     @Test
     void testEditPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(playlistService).editPlaylist(playlistDTO, 1);
-        when(playlistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
-        when(loginService.getUserID(token)).thenReturn(userId);
+        doNothing().when(IPlaylistService).editPlaylist(playlistDTO, 1);
+        when(IPlaylistService.getAllPlaylists(userId)).thenReturn(playlistResponseDTO);
+        when(ILoginService.getUserID(token)).thenReturn(userId);
 
         Response result = sut.editPlaylist(playlistDTO, playlistDTO.getId(), token);
 
@@ -111,7 +111,7 @@ public class PlaylistResourceTest {
 
     @Test
     void testGetAllTracksFromPlaylistSuccessfullyWithRightResponse() {
-        when(playlistService.getTracksPerPlaylist(playlistDTO.getId())).thenReturn(trackResponseDTO);
+        when(IPlaylistService.getTracksPerPlaylist(playlistDTO.getId())).thenReturn(trackResponseDTO);
 
         Response result = sut.getTracksFromPlaylist(playlistDTO.getId(), token);
 
@@ -121,9 +121,9 @@ public class PlaylistResourceTest {
 
     @Test
     void testAddTrackToPlaylistSuccessfullyWithRightResponse() {
-        doNothing().when(playlistService).addTrackToPlaylist(trackDTO,1);
+        doNothing().when(IPlaylistService).addTrackToPlaylist(trackDTO,1);
 
-        when(playlistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
+        when(IPlaylistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
 
         Response result = sut.addTrackToPlaylist(1, trackDTO, token);
 
@@ -133,9 +133,9 @@ public class PlaylistResourceTest {
 
     @Test
     void testRemoveTrackFromPlaylistSuccesfullyWithRightResponse() {
-        doNothing().when(playlistService).removeTrackFromPlaylist(1, 1);
+        doNothing().when(IPlaylistService).removeTrackFromPlaylist(1, 1);
 
-        when(playlistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
+        when(IPlaylistService.getTracksPerPlaylist(1)).thenReturn(trackResponseDTO);
 
         Response result = sut.removeTrackFromPlaylist(1, 1, token);
 
