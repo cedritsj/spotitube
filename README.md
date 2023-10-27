@@ -1,8 +1,5 @@
 # Spotitube Application
-# API Endpoints: 
-	-POST /login
-	-GET /playlists
-	-GET /playlists/{id}
-	-DELETE /playlists/{id}
-	-POST /playlists/{id}
-	-PUT /playlists/{id}
+Made this API for a school project at the HAN, used the Separated Interfaces and Layer patterns.
+Used generic functions for less code duplication.
+
+Test coverage: **95%**
